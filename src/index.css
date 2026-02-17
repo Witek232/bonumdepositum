@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold-50: #fdf8e8;
+  --color-gold-100: #f9edc6;
+  --color-gold-200: #f3db8a;
+  --color-gold-300: #ecc84e;
+  --color-gold-400: #e5b521;
+  --color-gold-500: #d4a012;
+  --color-gold-600: #b7800d;
+  --color-gold-700: #925e0e;
+  --color-gold-800: #784a13;
+  --color-gold-900: #663d16;
+  
+  --color-bronze-50: #faf6f3;
+  --color-bronze-100: #f2e8e0;
+  --color-bronze-200: #e3cfc0;
+  --color-bronze-300: #d2ae96;
+  --color-bronze-400: #c08a6b;
+  --color-bronze-500: #b4714f;
+  --color-bronze-600: #a75e43;
+  --color-bronze-700: #8b4b39;
+  --color-bronze-800: #724033;
+  --color-bronze-900: #5e372d;
+  
+  --font-cinzel: 'Cinzel', serif;
+  --font-cormorant: 'Cormorant Garamond', serif;
+  --font-inter: 'Inter', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter);
+  background: linear-gradient(180deg, #1c1917 0%, #0c0a09 100%);
+  min-height: 100vh;
+}
+
+.font-cinzel {
+  font-family: var(--font-cinzel);
+}
+
+.font-cormorant {
+  font-family: var(--font-cormorant);
+}
+
+/* Animated gradient background */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* Gold shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #d4a012 0%,
+    #f9edc6 25%,
+    #d4a012 50%,
+    #f9edc6 75%,
+    #d4a012 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 160, 18, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(212, 160, 18, 0.6);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1c1917;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d4a012 0%, #925e0e 100%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ecc84e 0%, #d4a012 100%);
+}
