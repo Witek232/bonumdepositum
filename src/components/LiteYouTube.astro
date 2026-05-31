@@ -1,17 +1,22 @@
 ---
-import LiteYouTubeEmbed from 'lite-youtube-embed';
-import 'lite-youtube-embed/css/lite-yt-embed.css'; // Ważne, żeby załadować style!
+// Web Component — brak named exportu, rejestruje się sam przez side-effect import
+import 'lite-youtube-embed/src/lite-yt-embed.css';
 
 const { videoid, title } = Astro.props;
 ---
 
-<!-- Dodajemy opakowanie z klasami Tailwind, żeby film nie rozsadzał strony i wyglądał elegancko -->
+<!-- Opakowanie zachowane identycznie jak oryginał -->
 <div class="w-full my-8 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
-  <LiteYouTubeEmbed videoid={videoid} title={title} />
+  <lite-youtube videoid={videoid} data-title={title}></lite-youtube>
 </div>
 
+<!-- JS jako side-effect: rejestruje <lite-youtube> w customElements -->
+<script>
+  import 'lite-youtube-embed/src/lite-yt-embed.js';
+</script>
+
 <style>
-  /* 
+  /*
     Mały trik CSS: biblioteka lite-youtube-embed tworzy własny kontener.
     Upewniamy się, że zajmuje 100% szerokości naszego opakowania.
   */
