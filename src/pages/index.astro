@@ -2,23 +2,17 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-// Pobierz najnowsze artykuły z bloga
-const allPosts = await getCollection('blog', ({ data }) => {
-  return data.lang === 'pl'; // Tylko polskie artykuły na stronie głównej
-});
+const allPosts = await getCollection('blog').catch(() => []);
+const latestPosts = allPosts
+  .filter(({ data }) => data.lang === 'pl')
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+  .slice(0, 3);
 
-const latestPosts = allPosts.sort((a, b) => 
-  new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
-).slice(0, 3);
-
-// Pobierz cykle
-const allCycles = await getCollection('cycles', ({ data }) => {
-  return data.lang === 'pl';
-});
-
-const latestCycles = allCycles.sort((a, b) => 
-  a.data.order - b.data.order
-).slice(0, 2);
+const allCycles = await getCollection('cycles').catch(() => []);
+const latestCycles = allCycles
+  .filter(({ data }) => data.lang === 'pl')
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+  .slice(0, 2);
 ---
 
 <Layout 
@@ -49,72 +43,76 @@ const latestCycles = allCycles.sort((a, b) =>
       </a>
     </div>
   </section>
-  
+
   <!-- Najnowsze artykuły -->
-  <section class="my-12">
-    <h2 class="text-2xl font-bold mb-6 border-b-2 border-accent pb-2">Najnowsze artykuły</h2>
-    <div class="grid md:grid-cols-3 gap-8">
-      {latestPosts.map(post => (
-        <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
-          {post.data.image && (
-            <img 
-              src={post.data.image} 
-              alt={post.data.title}
-              class="w-full h-48 object-cover"
-            />
-          )}
-          <div class="p-6">
-            <time datetime={post.data.pubDate.toISOString()} class="text-sm text-gray-500 dark:text-gray-400">
-              {post.data.pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </time>
-            <h3 class="text-xl font-bold mt-2 mb-2">
-              <a href={`/blog/${post.id}`} class="hover:text-accent dark:hover:text-dark-accent">
-                {post.data.title}
-              </a>
-            </h3>
-            <p class="text-gray-600 dark:text-gray-400 mb-4">
-              {post.data.description}
-            </p>
-            {post.data.cycle && (
-              <span class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Cykl: {post.data.cycle.data.title}
-              </span>
+  {latestPosts.length > 0 && (
+    <section class="my-12">
+      <h2 class="text-2xl font-bold mb-6 border-b-2 border-accent pb-2">Najnowsze artykuły</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        {latestPosts.map(post => (
+          <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+            {post.data.image && (
+              <img 
+                src={post.data.image} 
+                alt={post.data.title}
+                class="w-full h-48 object-cover"
+              />
             )}
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
-  
-  <!-- Sekcja cykli -->
-  <section class="my-12 bg-gray-50 dark:bg-gray-800/50 py-12 rounded-lg">
-    <div class="container mx-auto px-4">
-      <h2 class="text-2xl font-bold mb-6 text-center">Polecane cykle</h2>
-      <div class="grid md:grid-cols-2 gap-8">
-        {latestCycles.map(cycle => (
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h3 class="text-xl font-bold mb-2">
-              <a href={`/cycles/${cycle.id}`} class="hover:text-accent dark:hover:text-dark-accent">
-                {cycle.data.title}
-              </a>
-            </h3>
-            <p class="text-gray-600 dark:text-gray-400 mb-4">
-              {cycle.data.description}
-            </p>
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-500 dark:text-gray-400">
-                {cycle.data.order}. w kolejności
-              </span>
-              <a 
-                href={`/cycles/${cycle.id}`} 
-                class="text-accent dark:text-dark-accent hover:underline"
-              >
-                Zobacz cykl →
-              </a>
+            <div class="p-6">
+              <time datetime={new Date(post.data.pubDate).toISOString()} class="text-sm text-gray-500 dark:text-gray-400">
+                {new Date(post.data.pubDate).toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </time>
+              <h3 class="text-xl font-bold mt-2 mb-2">
+                <a href={`/blog/${post.id}`} class="hover:text-accent dark:hover:text-dark-accent">
+                  {post.data.title}
+                </a>
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-4">
+                {post.data.description}
+              </p>
+              {post.data.cycle?.data?.title && (
+                <span class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Cykl: {post.data.cycle.data.title}
+                </span>
+              )}
             </div>
-          </div>
+          </article>
         ))}
       </div>
-    </div>
-  </section>
+    </section>
+  )}
+
+  <!-- Sekcja cykli -->
+  {latestCycles.length > 0 && (
+    <section class="my-12 bg-gray-50 dark:bg-gray-800/50 py-12 rounded-lg">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold mb-6 text-center">Polecane cykle</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+          {latestCycles.map(cycle => (
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-bold mb-2">
+                <a href={`/cycles/${cycle.id}`} class="hover:text-accent dark:hover:text-dark-accent">
+                  {cycle.data.title}
+                </a>
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-4">
+                {cycle.data.description}
+              </p>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500 dark:text-gray-400">
+                  {cycle.data.order}. w kolejności
+                </span>
+                <a 
+                  href={`/cycles/${cycle.id}`} 
+                  class="text-accent dark:text-dark-accent hover:underline"
+                >
+                  Zobacz cykl →
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 </Layout>
