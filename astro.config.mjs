@@ -5,6 +5,7 @@ import mdx from '@astrojs/mdx';
 // 👇 Nowe importy dla konfiguracji Markdown
 import { unified } from '@astrojs/markdown-remark';
 import remarkToc from 'remark-toc';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://bonumdepositum.eu',
