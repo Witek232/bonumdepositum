@@ -19,7 +19,7 @@
     "astro": "^6.4.2",
     "lite-youtube-embed": "^0.3.4",
     "remark-toc": "^9.0.0",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
     "@astrojs/alpinejs": "^0.5.0"
   },
   "devDependencies": {
