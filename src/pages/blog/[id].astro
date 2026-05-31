@@ -1,0 +1,46 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+// Pobieranie wszystkich wpisów z kolekcji 'blog' i tworzenie statycznych ścieżek
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    params: { id: entry.id }, // 'id' to nazwa pliku bez rozszerzenia, np. 'katechizm-lekcja-01'
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Layout 
+  title={entry.data.title} 
+  description={entry.data.description} 
+  lang={entry.data.lang || 'pl'}
+>
+  <article class="prose-custom"> <!-- Możesz tu dodać klasy Tailwind jeśli potrzebujesz -->
+    
+    <!-- Nagłówek artykułu -->
+    <header class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-ink dark:text-dark-ink mb-4">
+        {entry.data.title}
+      </h1>
+      <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+        <time datetime={entry.data.pubDate.toISOString()}>
+          {entry.data.pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+        {entry.data.author && (
+          <span>· Autor: <strong>{entry.data.author}</strong></span>
+        )}
+      </div>
+    </header>
+
+    <!-- Treść artykułu (z pliku MDX) -->
+    <div class="text-ink dark:text-dark-ink leading-relaxed">
+      <Content />
+    </div>
+
+  </article>
+</Layout>
