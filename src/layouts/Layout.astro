@@ -4,14 +4,14 @@ import { SEO } from 'astro-seo';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
-
+ 
 const { title, description, image, lang = 'pl' } = Astro.props;
-
+ 
 // Konfiguracja SEO
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
 ---
-
+ 
 <!DOCTYPE html>
 <html lang={lang} class="scroll-smooth">
 <head>
@@ -29,17 +29,17 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
     title={title}
     description={description}
     canonical={canonicalURL}
-    openGraph={{
+    openGraph={image ? {
       title: title,
       description: description,
       url: canonicalURL,
       site_name: 'Bonum Depositum',
-      images: image ? [{ url: image }] : [],
+      images: [{ url: image }],
       locale: locale,
       type: 'website',
-    }}
+    } : undefined}
     twitter={{
-      card: 'summary_large_image',
+      card: image ? 'summary_large_image' : 'summary',
       title: title,
       description: description,
       images: image ? [image] : [],
@@ -94,3 +94,4 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   </script>
 </body>
 </html>
+ 
