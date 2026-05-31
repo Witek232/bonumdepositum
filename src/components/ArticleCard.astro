@@ -1,0 +1,22 @@
+```astro
+export interface Props {
+title: string;
+description: string;
+url: string;
+image?: string;
+}
+
+const { title, description, url, image } = Astro.props;
+<a href={url} class="group flex flex-col rounded-sm overflow-hidden bg-parchment dark:bg-woodLight shadow-book dark:shadow-book-dark transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-faded/10 dark:border-ivoryMuted/10">
+{image && <div class="relative h-48 overflow-hidden bg-faded/10 dark:bg-ivoryMuted/10">
+<img src={image} alt={title} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 dark:brightness-90" loading="lazy" />
+</div>}
+<div class="p-6 flex flex-col flex-1">
+<h3 class="text-xl text-ink dark:text-ivory mb-2 leading-tight group-hover:text-deepRed dark:group-hover:text-deepRed transition-colors">{title}</h3>
+<p class="text-faded dark:text-ivoryMuted text-sm flex-1 mb-4">{description}</p>
+<span class="inline-block self-start border-2 border-deepRed text-deepRed dark:text-deepRed dark:border-deepRed group-hover:bg-deepRed group-hover:text-parchment dark:group-hover:text-ivory px-3 py-1 text-xs uppercase tracking-wider transition-colors">
+Czytaj
+</span>
+</div>
+</a>
+```
