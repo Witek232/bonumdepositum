@@ -1,1 +1,26 @@
-@import "tailwindcss";
+
+---
+
+### ETAP 4: Layout i Styl Globalny
+
+**`src/styles/global.css`**
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-parchment text-ink dark:bg-wood dark:text-ivory font-serif leading-relaxed transition-colors duration-300;
+  }
+  h1, h2, h3, h4 {
+    @apply font-bold;
+  }
+  a {
+    @apply text-deepRed dark:text-deepRed hover:text-deepRedHover dark:hover:text-deepRedHover transition-colors;
+  }
+  /* Scrollbar dla trybu ciemnego */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { @apply bg-parchment dark:bg-wood; }
+  ::-webkit-scrollbar-thumb { @apply bg-faded dark:bg-ivoryMuted rounded-full; }
+}
