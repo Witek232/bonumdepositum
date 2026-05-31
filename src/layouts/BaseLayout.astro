@@ -1,0 +1,43 @@
+```astro
+import '../styles/global.css';
+
+export interface Props {
+title: string;
+description?: string;
+lang?: string;
+}
+
+const { title, description = "Bonum Depositum - Historia, Kultura, Wiara", lang = "pl" } = Astro.props;
+<!DOCTYPE html>
+<html lang={lang} class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content={description} />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Font Noto Serif z greką i łaciną -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Serif+Greek:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Lite Youtube CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lite-youtube-embed@0.2.0/src/lite-yt-embed.css" />
+
+<title>{title} | Bonum Depositum</title>
+
+<!-- Skrypt zapobiegający migotaniu (FOUC) trybu ciemnego -->
+<script is:inline>
+const theme = localStorage.getItem('theme');
+if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+document.documentElement.classList.add('dark');
+}
+</script></head>
+<body class="min-h-screen flex flex-col">
+<slot />
+
+<!-- Lite Youtube JS -->
+<script src="https://cdn.jsdelivr.net/npm/lite-youtube-embed@0.2.0/src/lite-yt-embed.js"></script></body>
+</html>
+```
