@@ -1,14 +1,12 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
-// 👇 Nowe importy dla konfiguracji Markdown
-import { unified } from '@astrojs/markdown-remark';
 import remarkToc from 'remark-toc';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://bonumdepositum.eu',
-  integrations: sitemap(), mdx()],
+  integrations: [sitemap(), mdx()],  // ✅ Poprawione: dodany nawias [ i przecinek
   i18n: {
     defaultLocale: 'pl',
     locales: ['pl', 'en', 'es'],
@@ -16,9 +14,8 @@ export default defineConfig({
       prefixDefaultLocale: false // Polski bez przedrostka, inne z przedrostkiem
     }
   },
-  // 👇 Dodana sekcja markdown z pluginem TOC
   vite: {
-    plugins: [tailwindcss()],  // <-- dodaj
+    plugins: [tailwindcss()],
   },
   markdown: {
     remarkPlugins: [
