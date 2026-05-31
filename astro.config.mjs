@@ -2,13 +2,18 @@ import { defineConfig } from 'astro/config';
 import alpinejs from '@astrojs/alpinejs';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
-import remarkToc from 'remark-toc';
+// USUNIĘTO: import remarkToc from 'remark-toc'; (Sätteri tego nie obsługuje)
 import tailwindcss from '@tailwindcss/vite';
 import { satteri } from '@astrojs/markdown-satteri';
 
 export default defineConfig({
   site: 'https://bonumdepositum.eu',
+  
+  // DODANO: Tryb statyczny - wymagany dla Cloudflare Pages (bez @astrojs/cloudflare)
+  output: 'static', 
+  
   integrations: [sitemap(), mdx(), alpinejs()],
+  
   i18n: {
     defaultLocale: 'pl',
     locales: ['pl', 'en', 'es'],
@@ -16,12 +21,13 @@ export default defineConfig({
       prefixDefaultLocale: false
     }
   },
+  
   vite: {
     plugins: [tailwindcss()],
   },
+  
   markdown: {
-    remarkPlugins: [
-      [remarkToc, { heading: 'spis-tresci' }]
-    ],
+    // ZMIANA: Zastąpienie "remarkPlugins" procesorem Sätteri dla maksymalnej wydajności
+    processor: satteri(),
   },
 });
