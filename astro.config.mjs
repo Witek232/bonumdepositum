@@ -1,15 +1,25 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
-
-import tailwindcss from '@tailwindcss/vite';
+import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
+// 👇 Nowe importy dla konfiguracji Markdown
+import { unified } from '@astrojs/markdown-remark';
+import remarkToc from 'remark-toc';
 
-// https://astro.build/config
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()]
+  site: 'https://bonumdepositum.eu',
+  integrations: [tailwind(), sitemap(), mdx()],
+  i18n: {
+    defaultLocale: 'pl',
+    locales: ['pl', 'en', 'es'],
+    routing: {
+      prefixDefaultLocale: false // Polski bez przedrostka, inne z przedrostkiem
+    }
   },
-
-  integrations: [sitemap(), mdx()]
+  // 👇 Dodana sekcja markdown z pluginem TOC
+  markdown: {
+    remarkPlugins: [
+      [remarkToc, { heading: 'spis-tresci' }] // Generuje TOC pod nagłówkiem h2 "spis-tresci"
+    ],
+  },
 });
