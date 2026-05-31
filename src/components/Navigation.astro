@@ -1,0 +1,96 @@
+---
+const { currentPath, lang = 'pl' } = Astro.props;
+
+// Tłumaczenia nawigacji
+const translations = {
+  pl: {
+    home: 'Strona główna',
+    blog: 'Blog',
+    cycles: 'Cykle',
+    reading: 'Czytelnia',
+  },
+  en: {
+    home: 'Home',
+    blog: 'Blog',
+    cycles: 'Series',
+    reading: 'Reading Room',
+  },
+  es: {
+    home: 'Inicio',
+    blog: 'Blog',
+    cycles: 'Ciclos',
+    reading: 'Sala de Lectura',
+  }
+};
+
+const t = translations[lang] || translations.pl;
+
+// Strony z langowymi wersjami
+const pages = [
+  { href: `/${lang === 'pl' ? '' : lang + '/'}`, text: t.home },
+  { href: `/${lang === 'pl' ? 'blog' : lang + '/blog'}`, text: t.blog },
+  { href: `/${lang === 'pl' ? 'cycles' : lang + '/cycles'}`, text: t.cycles },
+  { href: `/${lang === 'pl' ? 'reading' : lang + '/reading'}`, text: t.reading },
+];
+---
+
+<nav class="bg-white dark:bg-gray-900 shadow-lg">
+  <div class="container mx-auto px-4 py-3">
+    <div class="flex justify-between items-center">
+      <!-- Logo -->
+      <a href="/" class="text-xl font-bold text-ink dark:text-dark-ink hover:text-accent dark:hover:text-dark-accent">
+        Bonum Depositum
+      </a>
+      
+      <!-- Menu desktopowe -->
+      <div class="hidden md:flex space-x-6">
+        {pages.map(page => (
+          <a 
+            href={page.href} 
+            class={`hover:text-accent dark:hover:text-dark-accent ${currentPath === page.href ? 'font-bold text-accent dark:text-dark-accent' : ''}`}
+          >
+            {page.text}
+          </a>
+        ))}
+      </div>
+      
+      <!-- Przełącznik językowy -->
+      <div class="flex items-center space-x-2">
+        <a href="/pl" class={`text-sm ${lang === 'pl' ? 'font-bold text-accent' : ''}`}>PL</a>
+        <span class="text-gray-400">|</span>
+        <a href="/en" class={`text-sm ${lang === 'en' ? 'font-bold text-accent' : ''}`}>EN</a>
+        <span class="text-gray-400">|</span>
+        <a href="/es" class={`text-sm ${lang === 'es' ? 'font-bold text-accent' : ''}`}>ES</a>
+      </div>
+      
+      <!-- Menu mobilne -->
+      <div class="md:hidden">
+        <button id="mobileMenuBtn" class="text-ink dark:text-dark-ink">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Menu mobilne rozwijane -->
+    <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+      {pages.map(page => (
+        <a 
+          href={page.href} 
+          class="block py-2 px-4 text-ink dark:text-dark-ink hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+        >
+          {page.text}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Obsługa menu mobilnego
+  document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('hidden');
+  });
+</script>
