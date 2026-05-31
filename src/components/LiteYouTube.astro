@@ -1,0 +1,8 @@
+---
+import LiteYouTubeEmbed from 'lite-youtube-embed';
+import 'lite-youtube-embed/css/lite-yt-embed.css'; // Ważne, żeby załadować style!
+
+const { videoid, title } = Astro.props;
+---
+
+<LiteYouTubeEmbed videoid={videoid} title={title} />
