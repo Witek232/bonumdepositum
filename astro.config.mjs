@@ -8,12 +8,12 @@ import { satteri } from '@astrojs/markdown-satteri';
 
 export default defineConfig({
   site: 'https://bonumdepositum.eu',
-  integrations: [sitemap(), mdx()], alpinejs(), // ✅ Poprawione: dodany nawias [ i przecinek
+  integrations: [sitemap(), mdx(), alpinejs()],
   i18n: {
     defaultLocale: 'pl',
     locales: ['pl', 'en', 'es'],
     routing: {
-      prefixDefaultLocale: false // Polski bez przedrostka, inne z przedrostkiem
+      prefixDefaultLocale: false
     }
   },
   vite: {
@@ -21,7 +21,7 @@ export default defineConfig({
   },
   markdown: {
     remarkPlugins: [
-      [remarkToc, { heading: 'spis-tresci' }] // Generuje TOC pod nagłówkiem h2 "spis-tresci"
+      [remarkToc, { heading: 'spis-tresci' }]
     ],
   },
 });
