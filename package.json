@@ -16,10 +16,12 @@
     "@astrojs/markdown-satteri": "^0.2.1",
     "@astrojs/mdx": "^6.0.1",
     "@astrojs/sitemap": "^3.7.3",
-    "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.2",
     "lite-youtube-embed": "^0.3.4",
-    "tailwindcss": "^4.3.0",
     "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "tailwindcss": "^4.3.0"
   }
 }
