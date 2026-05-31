@@ -18,6 +18,9 @@ export default defineConfig({
     }
   },
   // 👇 Dodana sekcja markdown z pluginem TOC
+  vite: {
+    plugins: [tailwindcss()],  // <-- dodaj
+  },
   markdown: {
     remarkPlugins: [
       [remarkToc, { heading: 'spis-tresci' }] // Generuje TOC pod nagłówkiem h2 "spis-tresci"
