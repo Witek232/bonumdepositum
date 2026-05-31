@@ -5,4 +5,18 @@ import 'lite-youtube-embed/css/lite-yt-embed.css'; // Ważne, żeby załadować 
 const { videoid, title } = Astro.props;
 ---
 
-<LiteYouTubeEmbed videoid={videoid} title={title} />
+<!-- Dodajemy opakowanie z klasami Tailwind, żeby film nie rozsadzał strony i wyglądał elegancko -->
+<div class="w-full my-8 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
+  <LiteYouTubeEmbed videoid={videoid} title={title} />
+</div>
+
+<style>
+  /* 
+    Mały trik CSS: biblioteka lite-youtube-embed tworzy własny kontener.
+    Upewniamy się, że zajmuje 100% szerokości naszego opakowania.
+  */
+  :global(lite-youtube) {
+    width: 100%;
+    margin: 0; /* Usuwamy domyślny margines z biblioteki, bo obsługujemy go przez Tailwind (my-8) */
+  }
+</style>
