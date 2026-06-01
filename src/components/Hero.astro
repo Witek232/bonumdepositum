@@ -122,6 +122,24 @@ const t = translations[lang] || translations.pl;
 </section>
 
 <style>
+ /* =========================================
+     ROZWIĄZANIE: Wyjście poza kontener Layoutu
+     ========================================= */
+  .hero-section {
+    width: 100vw; /* Rozciągnij na całą szerokość okna przeglądarki */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
+  /* Rozmiary nagłówka */
+  .hero-heading {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--color-parchment-50);
+  }
+
   /* Rozmiary nagłówka */
   .hero-heading {
     font-size: clamp(2.5rem, 8vw, 5rem);
