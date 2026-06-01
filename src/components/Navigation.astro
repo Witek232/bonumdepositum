@@ -3,19 +3,19 @@ const { currentPath, lang = 'pl' } = Astro.props;
 
 const translations = {
   pl: {
-    home: 'Strona główna',
+    home: 'Początek', // ZMIANA TUTAJ
     blog: 'Blog',
     cycles: 'Cykle',
     reading: 'Czytelnia',
   },
   en: {
-    home: 'Home',
+    home: 'Start',    // ZMIANA TUTAJ
     blog: 'Blog',
     cycles: 'Series',
     reading: 'Reading Room',
   },
   es: {
-    home: 'Inicio',
+    home: 'Inicio',   // ZMIANA TUTAJ
     blog: 'Blog',
     cycles: 'Ciclos',
     reading: 'Sala de Lectura',
@@ -64,23 +64,7 @@ const pages = [
           </a>
         ))}
 
-        <!-- PRZEŁĄCZNIK TRYBU (Desktop) -->
-        <button 
-          @click="darkMode = !darkMode" 
-          class="ml-2 rounded-lg p-2 text-parchment-200 transition-colors duration-200 hover:bg-gold-500/10 hover:text-gold-400" 
-          aria-label="Zmień tryb jasny/ciemny"
-        >
-          <!-- Słońce (widoczne w trybie ciemnym) -->
-          <svg x-show="darkMode" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          <!-- Księżyc (widoczny w trybie jasnym) -->
-          <svg x-show="!darkMode" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        </button>
-
-        <!-- Przełącznik językowy -->
+        <!-- Przełącznik językowy (Bez przycisku trybu ciemnego) -->
         <div class="hidden sm:flex items-center gap-1 text-sm font-medium border-l border-gold-500/10 pl-4 ml-2">
           <a href="/pl" class={`nav-lang px-2 py-1 rounded transition-colors duration-200 ${lang === 'pl' ? 'nav-lang-active' : ''}`}>PL</a>
           <span class="nav-sep">·</span>
@@ -90,24 +74,16 @@ const pages = [
         </div>
       </div>
 
-      <!-- Prawa strona mobile: tryb + hamburger -->
+      <!-- Prawa strona mobile: hamburger -->
       <div class="flex items-center gap-2 md:hidden">
+        <div class="sm:hidden flex items-center gap-1 text-sm font-medium">
+          <a href="/pl" class={`nav-lang px-1 ${lang === 'pl' ? 'nav-lang-active' : ''}`}>PL</a>
+          <span class="nav-sep">·</span>
+          <a href="/en" class={`nav-lang px-1 ${lang === 'en' ? 'nav-lang-active' : ''}`}>EN</a>
+          <span class="nav-sep">·</span>
+          <a href="/es" class={`nav-lang px-1 ${lang === 'es' ? 'nav-lang-active' : ''}`}>ES</a>
+        </div>
 
-        <!-- PRZEŁĄCZNIK TRYBU (Mobile) -->
-        <button 
-          @click="darkMode = !darkMode" 
-          class="rounded-lg p-2 text-parchment-200 transition-colors duration-200 hover:bg-gold-500/10 hover:text-gold-400" 
-          aria-label="Zmień tryb jasny/ciemny"
-        >
-          <svg x-show="darkMode" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          <svg x-show="!darkMode" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        </button>
-
-        <!-- Hamburger (mobile) -->
         <button
           id="mobileMenuBtn"
           class="rounded-lg p-2 text-parchment-200 transition-colors duration-200 hover:bg-gold-500/10"
@@ -138,7 +114,7 @@ const pages = [
         </a>
       ))}
       <!-- Języki w mobile -->
-      <div class="flex items-center gap-2 px-4 pt-3 pb-1 text-sm border-t border-gold-500/10 mt-2">
+      <div class="hidden sm:flex items-center gap-2 px-4 pt-3 pb-1 text-sm border-t border-gold-500/10 mt-2">
         <a href="/pl" class={`nav-lang px-2 py-1 rounded ${lang === 'pl' ? 'nav-lang-active' : ''}`}>PL</a>
         <span class="nav-sep">·</span>
         <a href="/en" class={`nav-lang px-2 py-1 rounded ${lang === 'en' ? 'nav-lang-active' : ''}`}>EN</a>
