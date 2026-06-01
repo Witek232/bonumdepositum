@@ -122,8 +122,8 @@ const t = translations[lang] || translations.pl;
 </section>
 
 <style>
- /* =========================================
-     ROZWIĄZANIE: Wyjście poza kontener Layoutu
+  /* =========================================
+     ROZWIĄZANIE: Wyjście poza kontener i wciągnięcie do góry
      ========================================= */
   .hero-section {
     width: 100vw; /* Rozciągnij na całą szerokość okna przeglądarki */
@@ -132,12 +132,7 @@ const t = translations[lang] || translations.pl;
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-  }
-
-  /* Rozmiary nagłówka */
-  .hero-heading {
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    color: var(--color-parchment-50);
+    margin-top: -5rem; /* Wciągnięcie sekcji o 80px (5rem) do góry, pod nawigację! */
   }
 
   /* Rozmiary nagłówka */
