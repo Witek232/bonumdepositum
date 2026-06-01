@@ -3,106 +3,49 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import { getCollection } from 'astro:content';
 
-const allPosts = await getCollection('blog').catch(() => []);
-const latestPosts = allPosts
-  .filter(({ data }) => data.lang === 'pl')
-  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
-  .slice(0, 3);
-
-const allCycles = await getCollection('cycles').catch(() => []);
-const latestCycles = allCycles
-  .filter(({ data }) => data.lang === 'pl')
-  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
-  .slice(0, 2);
+const allPosts = await getCollection('blog', ({ data }) => data.lang === 'pl');
+const latestPosts = allPosts.sort((a, b) => 
+  new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+).slice(0, 3);
 ---
 
-<Layout
-  title="Bonum Depositum - Historia i Kultura"
-  description="Odkrywaj historię, architekturę i duchowość. Czytaj artykuły, oglądaj filmy i słuchaj opowieści."
+<Layout 
+  title="Strona Główna" 
+  description="Odkrywaj historię, architekturę i duchowość."
   lang="pl"
 >
-  <!-- Komponent Hero -->
-  <Hero lang="pl" />
+  
+  <!-- 1. HERO na pełnej szerokości, dotyka samej góry pod nawigacją -->
+  <Hero />
 
-  <!-- Najnowsze artykuły -->
-  {latestPosts.length > 0 && (
-    <section class="my-12 container mx-auto px-4 max-w-5xl">
-      <h2 class="text-2xl font-bold mb-6 border-b-2 pb-2" style="border-color: var(--color-gold-600)">
-        Najnowsze artykuły
-      </h2>
-      <div class="grid md:grid-cols-3 gap-8">
-        {latestPosts.map(post => (
-          <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
-            {post.data.image && (
-              <img
-                src={post.data.image}
-                alt={post.data.title}
-                class="w-full h-48 object-cover"
-              />
-            )}
-            <div class="p-6">
-              <time
-                datetime={new Date(post.data.pubDate).toISOString()}
-                class="text-sm text-gray-500 dark:text-gray-400"
-              >
-                {new Date(post.data.pubDate).toLocaleDateString('pl-PL', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </time>
-              <h3 class="text-xl font-bold mt-2 mb-2">
-                <a href={`/blog/${post.id}`} class="hover:text-accent dark:hover:text-dark-accent">
-                  {post.data.title}
-                </a>
-              </h3>
-              <p class="text-gray-600 dark:text-gray-400 mb-4">
-                {post.data.description}
-              </p>
-              {post.data.cycle?.data?.title && (
-                <span class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Cykl: {post.data.cycle.data.title}
-                </span>
-              )}
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  )}
+  <!-- 2. KARTA PERGAMINU - zaczyna się dopiero pod Hero -->
+  <main class="main-content min-h-screen shadow-2xl rounded-t-2xl pt-12 pb-12 -mt-4">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
 
-  <!-- Sekcja cykli -->
-  {latestCycles.length > 0 && (
-    <section class="my-12 bg-gray-50 dark:bg-gray-800/50 py-12 rounded-lg">
-      <div class="container mx-auto px-4 max-w-5xl">
-        <h2 class="text-2xl font-bold mb-6 text-center">Polecane cykle</h2>
-        <div class="grid md:grid-cols-2 gap-8">
-          {latestCycles.map(cycle => (
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-bold mb-2">
-                <a href={`/cycles/${cycle.id}`} class="hover:text-accent dark:hover:text-dark-accent">
-                  {cycle.data.title}
-                </a>
-              </h3>
-              <p class="text-gray-600 dark:text-gray-400 mb-4">
-                {cycle.data.description}
-              </p>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">
-                  {cycle.data.order}. w kolejności
-                </span>
-                <a
-                  href={`/cycles/${cycle.id}`}
-                  class="hover:underline"
-                  style="color: var(--color-gold-600)"
-                >
-                  Zobacz cykl →
-                </a>
+      <section class="my-12">
+        <h2 class="text-2xl font-bold mb-6 border-b-2 border-gold-500 pb-2">Najnowsze artykuły</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          {latestPosts.map(post => (
+            <article class="bg-parchment-100 border border-parchment-200 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+              <div class="p-6">
+                <time datetime={post.data.pubDate.toISOString()} class="text-sm text-ink-700/60">
+                  {post.data.pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </time>
+                <h3 class="text-xl font-bold mt-2 mb-2">
+                  <a href={`/blog/${post.id}`} class="hover:text-gold-600 transition-colors">
+                    {post.data.title}
+                  </a>
+                </h3>
+                <p class="text-ink-700/80 mb-4">
+                  {post.data.description}
+                </p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-      </div>
-    </section>
-  )}
+      </section>
+
+    </div>
+  </main>
+
 </Layout>
