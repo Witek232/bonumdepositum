@@ -122,9 +122,16 @@ const t = translations[lang] || translations.pl;
 </section>
 
 <style>
-  /* Sekcja Hero zajmuje naturalnie całą szerokość i wysokość ekranu */
+  /* =========================================
+     ROZWIĄZANIE: Wyjście poza ewentualne marginesy i rozciągnięcie na pełen ekran
+     ========================================= */
   .hero-section {
+    width: 100vw; /* Rozciągnij na całą szerokość okna przeglądarki */
     position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
   }
 
   /* Rozmiary nagłówka */
