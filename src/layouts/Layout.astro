@@ -1,17 +1,21 @@
 ---
-import { Font } from 'astro:assets';
-import { SEO } from 'astro-seo';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
- 
-const { title, description, image, lang = 'pl' } = Astro.props;
- 
-// Konfiguracja SEO
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  lang?: 'pl' | 'en' | 'es';
+}
+
+const { title, description, image = '/og-image.jpg', lang = 'pl' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const siteName = 'Bonum Depositum';
 const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
 ---
- 
+
 <!DOCTYPE html>
 <html lang={lang} class="scroll-smooth">
 <head>
@@ -19,79 +23,54 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="generator" content={Astro.generator} />
   
+  <link rel="canonical" href={canonicalURL} />
+  <title>{title} | {siteName}</title>
+  <meta name="description" content={description} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={new URL(image, Astro.site)} />
+  <meta property="og:site_name" content={siteName} />
+  <meta property="og:locale" content={locale} />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content={canonicalURL} />
+  <meta property="twitter:title" content={title} />
+  <meta property="twitter:description" content={description} />
+  <meta property="twitter:image" content={new URL(image, Astro.site)} />
+
   <!-- Czcionka Noto Serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  
-  <!-- SEO -->
-  <SEO
-    title={title}
-    description={description}
-    canonical={canonicalURL}
-    openGraph={image ? {
-      title: title,
-      description: description,
-      url: canonicalURL,
-      site_name: 'Bonum Depositum',
-      images: [{ url: image }],
-      locale: locale,
-      type: 'website',
-    } : undefined}
-    twitter={{
-      card: image ? 'summary_large_image' : 'summary',
-      title: title,
-      description: description,
-      images: image ? [image] : [],
-    }}
-  />
-  
-  <!-- Style globalne -->
-  <style is:global>
-    @import '../styles/global.css';
-  </style>
-  
-  <!-- Alpine.js do trybu ciemnego -->
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" :class="{ 'dark': darkMode }">
+
+<!-- Zmieniony tag body - Alpine.js obsługuje teraz nawigację i tryb ciemny w jednym miejscu -->
+<body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenuOpen: false }" :class="{ 'dark': darkMode }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', String(val)))">
   
-  <!-- Nawigacja -->
   <Navigation currentPath={Astro.url.pathname} lang={lang} />
   
-  <!-- Główna treść -->
-  <main class="container mx-auto px-4 py-8 max-w-4xl">
+  <main class="container mx-auto px-4 py-8 max-w-5xl min-h-screen">
     <slot />
   </main>
   
-  <!-- Stopka -->
   <Footer lang={lang} />
   
-  <!-- Przełącznik trybu ciemnego -->
-  <ThemeToggle />
-  
-  <!-- Skrypt dla trybu ciemnego -->
+  <!-- Skrypt Alpine.js -->
   <script>
-    // Obsługa przełącznika
     document.addEventListener('alpine:init', () => {
       Alpine.data('themeToggle', () => ({
-        darkMode: localStorage.getItem('darkMode') === 'true',
-        
         toggleTheme() {
           this.darkMode = !this.darkMode;
-          localStorage.setItem('darkMode', this.darkMode);
-          
-          // Aktualizacja klasy na html
-          document.documentElement.classList.toggle('dark', this.darkMode);
-        },
-        
-        init() {
-          // Inicjalizacja - synchronizacja z localStorage
           document.documentElement.classList.toggle('dark', this.darkMode);
         }
       }));
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>
 </html>
- 
