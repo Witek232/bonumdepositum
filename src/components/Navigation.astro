@@ -3,19 +3,19 @@ const { currentPath, lang = 'pl' } = Astro.props;
 
 const translations = {
   pl: {
-    home: 'Początek', // ZMIANA TUTAJ
+    home: 'Początek',
     blog: 'Blog',
     cycles: 'Cykle',
     reading: 'Czytelnia',
   },
   en: {
-    home: 'Start',    // ZMIANA TUTAJ
+    home: 'Start',
     blog: 'Blog',
     cycles: 'Series',
     reading: 'Reading Room',
   },
   es: {
-    home: 'Inicio',   // ZMIANA TUTAJ
+    home: 'Inicio',
     blog: 'Blog',
     cycles: 'Ciclos',
     reading: 'Sala de Lectura',
@@ -64,7 +64,7 @@ const pages = [
           </a>
         ))}
 
-        <!-- Przełącznik językowy (Bez przycisku trybu ciemnego) -->
+        <!-- Przełącznik językowy -->
         <div class="hidden sm:flex items-center gap-1 text-sm font-medium border-l border-gold-500/10 pl-4 ml-2">
           <a href="/pl" class={`nav-lang px-2 py-1 rounded transition-colors duration-200 ${lang === 'pl' ? 'nav-lang-active' : ''}`}>PL</a>
           <span class="nav-sep">·</span>
@@ -125,8 +125,9 @@ const pages = [
   </div>
 </nav>
 
-<!-- Spacer -->
-<div class="h-20"></div>
+<!-- UWAGA: Spacer (div h-20) został celowo usunięty! -->
+<!-- Odstep dla podstron dodajemy bezpośrednio w tagach <main> na stronach (pt-20) -->
+<!-- Hero wchodzi pod nawigację, więc nie potrzebuje spaceru -->
 
 <style>
   /* Zawsze ciemne tło — na górze przezroczyste, po scrollu pełne */
