@@ -1,7 +1,6 @@
 ---
 const { currentPath, lang = 'pl' } = Astro.props;
 
-// Tłumaczenia nawigacji
 const translations = {
   pl: {
     home: 'Strona główna',
@@ -25,7 +24,6 @@ const translations = {
 
 const t = translations[lang] || translations.pl;
 
-// Strony z langowymi wersjami
 const pages = [
   { href: `/${lang === 'pl' ? '' : lang + '/'}`, text: t.home },
   { href: `/${lang === 'pl' ? 'blog' : lang + '/blog'}`, text: t.blog },
@@ -34,63 +32,317 @@ const pages = [
 ];
 ---
 
-<nav class="bg-white dark:bg-gray-900 shadow-lg">
-  <div class="container mx-auto px-4 py-3">
-    <div class="flex justify-between items-center">
+<nav
+  id="main-nav"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 nav-transparent"
+>
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="flex h-20 items-center justify-between">
+
       <!-- Logo -->
-      <a href="/" class="text-xl font-bold text-ink dark:text-dark-ink hover:text-accent dark:hover:text-dark-accent">
-        Bonum Depositum
+      <a href="/" class="group flex items-center gap-3">
+        <div class="nav-logo-icon flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-300">
+          <!-- Ikona księgi (SVG inline, bez zewnętrznych zależności) -->
+          <svg class="h-5 w-5 nav-logo-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+          </svg>
+        </div>
+        <span class="font-serif text-xl font-bold tracking-wide nav-logo-text transition-colors duration-300">
+          Bonum Depositum
+        </span>
       </a>
-      
+
       <!-- Menu desktopowe -->
-      <div class="hidden md:flex space-x-6">
+      <div class="hidden md:flex items-center gap-1">
         {pages.map(page => (
-          <a 
-            href={page.href} 
-            class={`hover:text-accent dark:hover:text-dark-accent ${currentPath === page.href ? 'font-bold text-accent dark:text-dark-accent' : ''}`}
+          <a
+            href={page.href}
+            class={`nav-link rounded-lg px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300
+              ${currentPath === page.href ? 'nav-link-active' : ''}`}
           >
             {page.text}
           </a>
         ))}
       </div>
-      
-      <!-- Przełącznik językowy -->
-      <div class="flex items-center space-x-2">
-        <a href="/pl" class={`text-sm ${lang === 'pl' ? 'font-bold text-accent' : ''}`}>PL</a>
-        <span class="text-gray-400">|</span>
-        <a href="/en" class={`text-sm ${lang === 'en' ? 'font-bold text-accent' : ''}`}>EN</a>
-        <span class="text-gray-400">|</span>
-        <a href="/es" class={`text-sm ${lang === 'es' ? 'font-bold text-accent' : ''}`}>ES</a>
-      </div>
-      
-      <!-- Menu mobilne -->
-      <div class="md:hidden">
-        <button id="mobileMenuBtn" class="text-ink dark:text-dark-ink">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+
+      <!-- Prawa strona: języki + hamburger -->
+      <div class="flex items-center gap-4">
+
+        <!-- Przełącznik językowy -->
+        <div class="hidden sm:flex items-center gap-1 text-sm font-medium">
+          <a href="/pl" class={`nav-lang px-2 py-1 rounded transition-all duration-200 ${lang === 'pl' ? 'nav-lang-active' : ''}`}>PL</a>
+          <span class="nav-lang-sep">·</span>
+          <a href="/en" class={`nav-lang px-2 py-1 rounded transition-all duration-200 ${lang === 'en' ? 'nav-lang-active' : ''}`}>EN</a>
+          <span class="nav-lang-sep">·</span>
+          <a href="/es" class={`nav-lang px-2 py-1 rounded transition-all duration-200 ${lang === 'es' ? 'nav-lang-active' : ''}`}>ES</a>
+        </div>
+
+        <!-- Hamburger (mobile) -->
+        <button
+          id="mobileMenuBtn"
+          class="nav-hamburger md:hidden rounded-lg p-2 transition-colors duration-200"
+          aria-label="Otwórz menu"
+          aria-expanded="false"
+        >
+          <!-- Ikona hamburger -->
+          <svg id="iconMenu" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <!-- Ikona X -->
+          <svg id="iconClose" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
     </div>
-    
-    <!-- Menu mobilne rozwijane -->
-    <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+  </div>
+
+  <!-- Menu mobilne -->
+  <div
+    id="mobileMenu"
+    class="hidden md:hidden border-t nav-mobile-menu"
+  >
+    <div class="space-y-1 px-6 py-4">
       {pages.map(page => (
-        <a 
-          href={page.href} 
-          class="block py-2 px-4 text-ink dark:text-dark-ink hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+        <a
+          href={page.href}
+          class={`nav-mobile-link block rounded-lg px-4 py-3 text-sm font-medium tracking-wide transition-colors duration-200
+            ${currentPath === page.href ? 'nav-mobile-link-active' : ''}`}
         >
           {page.text}
         </a>
       ))}
+      <!-- Języki w mobile -->
+      <div class="flex items-center gap-2 px-4 pt-3 pb-1 text-sm font-medium border-t nav-mobile-lang-row mt-2">
+        <a href="/pl" class={`nav-lang px-2 py-1 rounded ${lang === 'pl' ? 'nav-lang-active' : ''}`}>PL</a>
+        <span class="nav-lang-sep">·</span>
+        <a href="/en" class={`nav-lang px-2 py-1 rounded ${lang === 'en' ? 'nav-lang-active' : ''}`}>EN</a>
+        <span class="nav-lang-sep">·</span>
+        <a href="/es" class={`nav-lang px-2 py-1 rounded ${lang === 'es' ? 'nav-lang-active' : ''}`}>ES</a>
+      </div>
     </div>
   </div>
 </nav>
 
+<!-- Spacer, żeby treść strony nie była przykryta fixed navem -->
+<div class="h-20"></div>
+
+<style>
+  /* === Stan przezroczysty (na górze strony) === */
+  .nav-transparent {
+    background-color: transparent;
+  }
+  .nav-transparent .nav-logo-text {
+    color: var(--color-ink-900);
+  }
+  .nav-transparent .nav-logo-icon {
+    border: 1px solid color-mix(in srgb, var(--color-gold-500) 30%, transparent);
+    background-color: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+  }
+  .nav-transparent .nav-logo-svg {
+    color: var(--color-gold-600);
+  }
+  .nav-transparent .nav-link {
+    color: color-mix(in srgb, var(--color-ink-800) 80%, transparent);
+  }
+  .nav-transparent .nav-link:hover {
+    background-color: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+    color: var(--color-gold-600);
+  }
+  .nav-transparent .nav-link-active {
+    color: var(--color-gold-600);
+    font-weight: 700;
+  }
+  .nav-transparent .nav-lang {
+    color: color-mix(in srgb, var(--color-ink-800) 70%, transparent);
+  }
+  .nav-transparent .nav-lang:hover {
+    color: var(--color-gold-600);
+  }
+  .nav-transparent .nav-lang-active {
+    color: var(--color-gold-600);
+    font-weight: 700;
+  }
+  .nav-transparent .nav-lang-sep {
+    color: var(--color-parchment-400);
+  }
+  .nav-transparent .nav-hamburger {
+    color: var(--color-ink-800);
+  }
+  .nav-transparent .nav-hamburger:hover {
+    background-color: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+  }
+
+  /* === Stan po przewinięciu === */
+  .nav-scrolled {
+    background-color: color-mix(in srgb, var(--color-ink-950) 95%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  }
+  .nav-scrolled .nav-logo-text {
+    color: var(--color-parchment-100);
+  }
+  .nav-scrolled .nav-logo-icon {
+    border: 1px solid color-mix(in srgb, var(--color-gold-500) 30%, transparent);
+    background-color: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+  }
+  .nav-scrolled .nav-logo-svg {
+    color: var(--color-gold-400);
+  }
+  .nav-scrolled .nav-link {
+    color: color-mix(in srgb, var(--color-parchment-200) 80%, transparent);
+  }
+  .nav-scrolled .nav-link:hover {
+    background-color: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+    color: var(--color-gold-400);
+  }
+  .nav-scrolled .nav-link-active {
+    color: var(--color-gold-400);
+    font-weight: 700;
+  }
+  .nav-scrolled .nav-lang {
+    color: color-mix(in srgb, var(--color-parchment-200) 70%, transparent);
+  }
+  .nav-scrolled .nav-lang:hover {
+    color: var(--color-gold-400);
+  }
+  .nav-scrolled .nav-lang-active {
+    color: var(--color-gold-400);
+    font-weight: 700;
+  }
+  .nav-scrolled .nav-lang-sep {
+    color: color-mix(in srgb, var(--color-gold-500) 30%, transparent);
+  }
+  .nav-scrolled .nav-hamburger {
+    color: var(--color-parchment-200);
+  }
+  .nav-scrolled .nav-hamburger:hover {
+    background-color: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+  }
+
+  /* === Menu mobilne === */
+  .nav-mobile-menu {
+    border-color: color-mix(in srgb, var(--color-gold-500) 15%, transparent);
+    background-color: color-mix(in srgb, var(--color-ink-950) 98%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .nav-mobile-link {
+    color: color-mix(in srgb, var(--color-parchment-200) 80%, transparent);
+  }
+  .nav-mobile-link:hover {
+    background-color: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+    color: var(--color-gold-400);
+  }
+  .nav-mobile-link-active {
+    color: var(--color-gold-400);
+    font-weight: 700;
+  }
+  .nav-mobile-lang-row {
+    border-color: color-mix(in srgb, var(--color-gold-500) 15%, transparent);
+  }
+
+  /* === Animacja menu mobilnego === */
+  #mobileMenu.is-open {
+    animation: slideDown 0.3s ease-out forwards;
+  }
+
+  /* Tryb jasny: scrolled przełącza na pergamin zamiast ciemnego */
+  :root:not(.dark) .nav-scrolled {
+    background-color: color-mix(in srgb, var(--color-parchment-50) 97%, transparent);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+  :root:not(.dark) .nav-scrolled .nav-logo-text {
+    color: var(--color-ink-900);
+  }
+  :root:not(.dark) .nav-scrolled .nav-logo-svg {
+    color: var(--color-gold-600);
+  }
+  :root:not(.dark) .nav-scrolled .nav-link {
+    color: color-mix(in srgb, var(--color-ink-800) 80%, transparent);
+  }
+  :root:not(.dark) .nav-scrolled .nav-link:hover {
+    color: var(--color-gold-600);
+  }
+  :root:not(.dark) .nav-scrolled .nav-link-active {
+    color: var(--color-gold-600);
+  }
+  :root:not(.dark) .nav-scrolled .nav-lang {
+    color: color-mix(in srgb, var(--color-ink-800) 70%, transparent);
+  }
+  :root:not(.dark) .nav-scrolled .nav-lang:hover {
+    color: var(--color-gold-600);
+  }
+  :root:not(.dark) .nav-scrolled .nav-lang-active {
+    color: var(--color-gold-600);
+  }
+  :root:not(.dark) .nav-scrolled .nav-hamburger {
+    color: var(--color-ink-800);
+  }
+
+  :root:not(.dark) .nav-mobile-menu {
+    background-color: color-mix(in srgb, var(--color-parchment-50) 98%, transparent);
+  }
+  :root:not(.dark) .nav-mobile-link {
+    color: var(--color-ink-800);
+  }
+  :root:not(.dark) .nav-mobile-link:hover {
+    color: var(--color-gold-600);
+    background-color: color-mix(in srgb, var(--color-gold-500) 8%, transparent);
+  }
+  :root:not(.dark) .nav-mobile-link-active {
+    color: var(--color-gold-600);
+  }
+</style>
+
 <script>
-  // Obsługa menu mobilnego
-  document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-    const mobileMenu = document.getElementById('mobileMenu');
-    mobileMenu.classList.toggle('hidden');
+  const nav = document.getElementById('main-nav');
+  const btn = document.getElementById('mobileMenuBtn');
+  const menu = document.getElementById('mobileMenu');
+  const iconMenu = document.getElementById('iconMenu');
+  const iconClose = document.getElementById('iconClose');
+
+  // Scroll: przełącz klasę nav-scrolled / nav-transparent
+  function updateNavScroll() {
+    if (window.scrollY > 60) {
+      nav?.classList.add('nav-scrolled');
+      nav?.classList.remove('nav-transparent');
+    } else {
+      nav?.classList.remove('nav-scrolled');
+      nav?.classList.add('nav-transparent');
+    }
+  }
+  window.addEventListener('scroll', updateNavScroll, { passive: true });
+  updateNavScroll();
+
+  // Menu mobilne
+  btn?.addEventListener('click', () => {
+    const isOpen = !menu?.classList.contains('hidden');
+    if (isOpen) {
+      menu?.classList.add('hidden');
+      menu?.classList.remove('is-open');
+      iconMenu?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+      btn?.setAttribute('aria-expanded', 'false');
+    } else {
+      menu?.classList.remove('hidden');
+      menu?.classList.add('is-open');
+      iconMenu?.classList.add('hidden');
+      iconClose?.classList.remove('hidden');
+      btn?.setAttribute('aria-expanded', 'true');
+    }
+  });
+
+  // Zamknij menu po kliknięciu linka
+  menu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu?.classList.add('hidden');
+      menu?.classList.remove('is-open');
+      iconMenu?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+      btn?.setAttribute('aria-expanded', 'false');
+    });
   });
 </script>
