@@ -1,3 +1,126 @@
+---
+interface Props {
+  lang?: 'pl' | 'en' | 'es';
+}
+const { lang = 'pl' } = Astro.props;
+
+const translations = {
+  pl: {
+    tagline: 'Filozofia · Edukacja · Duchowość',
+    heading1: 'Poznaj mądrość',
+    heading2: 'która trwa wiecznie',
+    description: 'Odkryj fundamenty ludzkiej myśli — od starożytnych filozofów, przez wielkich teologów, po współczesnych myślicieli. Wiedza, która kształtuje umysł i ducha.',
+    cta1: 'Odkryj filary mądrości',
+    cta2: 'Nauki mistrzów',
+    scroll: 'Przewiń',
+    cta1href: '#pillars',
+    cta2href: '#teachings',
+    scrollhref: '#about',
+  },
+  en: {
+    tagline: 'Philosophy · Education · Spirituality',
+    heading1: 'Discover wisdom',
+    heading2: 'that endures forever',
+    description: 'Explore the foundations of human thought — from ancient philosophers to great theologians and modern thinkers. Knowledge that shapes mind and spirit.',
+    cta1: 'Explore the pillars of wisdom',
+    cta2: 'Teachings of the masters',
+    scroll: 'Scroll',
+    cta1href: '#pillars',
+    cta2href: '#teachings',
+    scrollhref: '#about',
+  },
+  es: {
+    tagline: 'Filosofía · Educación · Espiritualidad',
+    heading1: 'Descubre la sabiduría',
+    heading2: 'que perdura para siempre',
+    description: 'Explora los fundamentos del pensamiento humano — desde filósofos antiguos, grandes teólogos hasta pensadores modernos. El conocimiento que forma la mente y el espíritu.',
+    cta1: 'Descubre los pilares de la sabiduría',
+    cta2: 'Enseñanzas de los maestros',
+    scroll: 'Desplázate',
+    cta1href: '#pillars',
+    cta2href: '#teachings',
+    scrollhref: '#about',
+  },
+};
+
+const t = translations[lang] || translations.pl;
+---
+
+<section
+  id="home"
+  class="hero-section relative flex min-h-screen items-center justify-center overflow-hidden"
+>
+  <!-- Tło -->
+  <div class="absolute inset-0">
+    <img
+      src="/images/hero-bg.jpg"
+      alt=""
+      class="h-full w-full object-cover"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-[#0a0804]/80 via-[#0a0804]/60 to-[#0a0804]/90"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0a0804]/40 via-transparent to-[#0a0804]/40"></div>
+  </div>
+
+  <!-- Ornament górny -->
+  <div class="absolute top-24 left-1/2 -translate-x-1/2 opacity-20 pointer-events-none" aria-hidden="true">
+    <svg width="200" height="40" viewBox="0 0 200 40" fill="none">
+      <path d="M0 20 H80 M120 20 H200" stroke="#d4a843" stroke-width="1" />
+      <circle cx="100" cy="20" r="8" stroke="#d4a843" stroke-width="1" fill="none" />
+      <circle cx="100" cy="20" r="3" fill="#d4a843" />
+      <path d="M85 20 L92 13 M85 20 L92 27 M115 20 L108 13 M115 20 L108 27" stroke="#d4a843" stroke-width="1" />
+    </svg>
+  </div>
+
+  <!-- Treść -->
+  <div class="relative z-10 mx-auto max-w-5xl px-6 text-center">
+
+    <p class="hero-tagline animate-fade-in-up delay-200 opacity-0 mb-6 text-sm font-medium uppercase">
+      {t.tagline}
+    </p>
+
+    <h1 class="animate-fade-in-up delay-300 opacity-0 hero-heading font-serif font-bold leading-tight tracking-tight">
+      {t.heading1}
+      <br />
+      <span class="hero-heading-gradient">
+        {t.heading2}
+      </span>
+    </h1>
+
+    <p class="animate-fade-in-up delay-500 opacity-0 hero-description mx-auto mt-8 max-w-2xl leading-relaxed">
+      {t.description}
+    </p>
+
+    <div class="animate-fade-in-up delay-600 opacity-0 mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
+      <a href={t.cta1href} class="hero-btn-primary">
+        <span class="relative z-10">{t.cta1}</span>
+      </a>
+      <a href={t.cta2href} class="hero-btn-secondary">
+        {t.cta2}
+        <!-- Ikona ChevronDown inline -->
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Wskaźnik scrollowania -->
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2">
+    <a href={t.scrollhref} class="hero-scroll-indicator flex flex-col items-center gap-2">
+      <span class="text-xs tracking-[0.2em] uppercase">{t.scroll}</span>
+      <div class="h-12 w-px bg-gradient-to-b from-[#d4a843]/50 to-transparent"></div>
+    </a>
+  </div>
+
+  <!-- Dolna linia dekoracyjna -->
+  <div
+    class="absolute right-0 bottom-0 left-0 h-px bg-gradient-to-r from-transparent via-[#c49a38]/30 to-transparent"
+    aria-hidden="true"
+  ></div>
+</section>
+
 <style>
   /* =========================================
      ROZWIĄZANIE: Wyjście poza ewentualne marginesy i rozciągnięcie na pełen ekran
