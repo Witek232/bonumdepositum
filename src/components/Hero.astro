@@ -1,135 +1,110 @@
----
-interface Props {
-  lang?: 'pl' | 'en' | 'es';
-}
-const { lang = 'pl' } = Astro.props;
-
-// Opcjonalnie: jeśli chcesz zachować tłumaczenia z poprzedniej wersji
-const translations = {
-  pl: {
-    tagline: 'Filozofia · Edukacja · Duchowość',
-    heading1: 'Poznaj mądrość',
-    heading2: 'która trwa wiecznie',
-    description: 'Odkryj fundamenty ludzkiej myśli — od starożytnych filozofów, przez wielkich teologów, po współczesnych myślicieli. Wiedza, która kształtuje umysł i ducha.',
-    cta1: 'Odkryj filary mądrości',
-    cta2: 'Nauki mistrzów',
-    scroll: 'Przewiń',
-    cta1href: '#pillars',
-    cta2href: '#teachings',
-    scrollhref: '#about',
-  },
-  en: {
-    tagline: 'Philosophy · Education · Spirituality',
-    heading1: 'Discover wisdom',
-    heading2: 'that endures forever',
-    description: 'Explore the foundations of human thought — from ancient philosophers to great theologians and modern thinkers. Knowledge that shapes mind and spirit.',
-    cta1: 'Explore the pillars of wisdom',
-    cta2: 'Teachings of the masters',
-    scroll: 'Scroll',
-    cta1href: '#pillars',
-    cta2href: '#teachings',
-    scrollhref: '#about',
-  },
-  es: {
-    tagline: 'Filosofía · Educación · Espiritualidad',
-    heading1: 'Descubre la sabiduría',
-    heading2: 'que perdura para siempre',
-    description: 'Explora los fundamentos del pensamiento humano — desde filósofos antiguos, grandes teólogos hasta pensadores modernos. El conocimiento que forma la mente y el espíritu.',
-    cta1: 'Descubre los pilares de la sabiduría',
-    cta2: 'Enseñanzas de los maestros',
-    scroll: 'Desplázate',
-    cta1href: '#pillars',
-    cta2href: '#teachings',
-    scrollhref: '#about',
-  },
-};
-
-const t = translations[lang] || translations.pl;
----
-
-<section
-  id="home"
-  class="relative flex min-h-screen items-center justify-center overflow-hidden"
->
-  <!-- Background image -->
-  <div class="absolute inset-0">
-    <img
-      src="/images/hero-bg.jpg"
-      alt=""
-      class="h-full w-full object-cover"
-      loading="eager"
-      fetchpriority="high"
-    />
-    <div class="absolute inset-0 bg-gradient-to-b from-ink-950/80 via-ink-950/60 to-ink-950/90"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-ink-950/40 via-transparent to-ink-950/40"></div>
-  </div>
-
-  <!-- Decorative ornament top -->
-  <div class="absolute top-24 left-1/2 -translate-x-1/2 opacity-20 pointer-events-none" aria-hidden="true">
-    <svg width="200" height="40" viewBox="0 0 200 40" fill="none">
-      <path d="M0 20 H80 M120 20 H200" stroke="#d4a843" stroke-width="1" />
-      <circle cx="100" cy="20" r="8" stroke="#d4a843" stroke-width="1" fill="none" />
-      <circle cx="100" cy="20" r="3" fill="#d4a843" />
-      <path d="M85 20 L92 13 M85 20 L92 27 M115 20 L108 13 M115 20 L108 27" stroke="#d4a843" stroke-width="1" />
-    </svg>
-  </div>
-
-  <!-- Content -->
-  <div class="relative z-10 mx-auto max-w-5xl px-6 text-center">
-    
-    <p class="animate-fade-in-up mb-6 text-sm font-medium tracking-[0.35em] text-gold-400 uppercase opacity-0 delay-200">
-      {t.tagline}
-    </p>
-
-    <h1 class="animate-fade-in-up font-display text-5xl font-bold leading-tight tracking-tight text-parchment-50 opacity-0 delay-300 sm:text-6xl lg:text-7xl xl:text-8xl">
-      {t.heading1}
-      <br />
-      <span class="bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 bg-clip-text text-transparent">
-        {t.heading2}
-      </span>
-    </h1>
-
-    <p class="animate-fade-in-up mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-parchment-200/70 opacity-0 delay-500 sm:text-xl">
-      {t.description}
-    </p>
-
-    <div class="animate-fade-in-up mt-12 flex flex-col items-center justify-center gap-4 opacity-0 delay-600 sm:flex-row sm:gap-6">
-      <a
-        href={t.cta1href}
-        class="group relative inline-flex items-center gap-2 overflow-hidden rounded-lg border border-gold-500/30 bg-gold-500/10 px-8 py-4 text-sm font-semibold tracking-widest text-gold-400 uppercase backdrop-blur-sm transition-all duration-500 hover:border-gold-400 hover:bg-gold-500/20 hover:text-gold-300 hover:shadow-lg hover:shadow-gold-500/10"
-      >
-        <span class="relative z-10">{t.cta1}</span>
-      </a>
-      <a
-        href={t.cta2href}
-        class="inline-flex items-center gap-2 rounded-lg px-8 py-4 text-sm font-medium tracking-widest text-parchment-300/60 uppercase transition-all duration-300 hover:text-parchment-100"
-      >
-        {t.cta2}
-        <!-- Zamieniono lucide-react na zwykły SVG, by nie instalować Reacta -->
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
-        </svg>
-      </a>
-    </div>
-  </div>
-
-  <!-- Scroll indicator -->
-  <div class="absolute bottom-10 left-1/2 -translate-x-1/2">
-    <a href={t.scrollhref} class="flex flex-col items-center gap-2 text-parchment-300/40 transition-colors hover:text-gold-400">
-      <span class="text-xs tracking-[0.2em] uppercase">{t.scroll}</span>
-      <div class="h-12 w-px bg-gradient-to-b from-gold-400/50 to-transparent" />
-    </a>
-  </div>
-
-  <!-- Bottom decorative border -->
-  <div class="absolute right-0 bottom-0 left-0 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" aria-hidden="true"></div>
-</section>
-
 <style>
-  /* 
-    Ponieważ usunęliśmy kontener z Layout.astro i w index.astro 
-    Hero jest renderowane bezpośrednio w slocie, nie potrzebujemy już 
-    sztucznego rozciągania (100vw i ujemnych marginesów). 
-    Sekcja naturalnie zajmie całą szerokość ekranu i dotknie samej góry!
-  */
+  /* =========================================
+     ROZWIĄZANIE: Wyjście poza ewentualne marginesy i rozciągnięcie na pełen ekran
+     ========================================= */
+  .hero-section {
+    width: 100vw; /* Rozciągnij na całą szerokość okna przeglądarki */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
+  /* Rozmiary nagłówka */
+  .hero-heading {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--color-parchment-50);
+  }
+  @media (min-width: 640px)  { .hero-heading { font-size: clamp(3rem, 9vw, 6rem); } }
+  @media (min-width: 1024px) { .hero-heading { font-size: clamp(3.5rem, 10vw, 7rem); } }
+  @media (min-width: 1280px) { .hero-heading { font-size: 4rem; } }
+
+  /* Gradient tekstu w nagłówku */
+  .hero-heading-gradient {
+    background: linear-gradient(
+      to right,
+      var(--color-gold-400),
+      var(--color-gold-500),
+      var(--color-gold-400)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Tagline */
+  .hero-tagline {
+    letter-spacing: 0.35em;
+    color: var(--color-gold-400);
+  }
+
+  /* Opis */
+  .hero-description {
+    font-size: 1.125rem;
+    color: color-mix(in srgb, var(--color-parchment-200) 70%, transparent);
+  }
+  @media (min-width: 640px) {
+    .hero-description { font-size: 1.25rem; }
+  }
+
+  /* Przycisk główny */
+  .hero-btn-primary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--color-gold-500) 30%, transparent);
+    background-color: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+    padding: 1rem 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-gold-400);
+    backdrop-filter: blur(4px);
+    transition: all 0.5s ease;
+    text-decoration: none;
+  }
+  .hero-btn-primary:hover {
+    border-color: var(--color-gold-400);
+    background-color: color-mix(in srgb, var(--color-gold-500) 20%, transparent);
+    color: var(--color-gold-300, #e8c060);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+    text-decoration: none;
+  }
+
+  /* Przycisk drugorzędny */
+  .hero-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 1rem 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-parchment-300, #ddd0b8) 60%, transparent);
+    transition: color 0.3s ease;
+    text-decoration: none;
+  }
+  .hero-btn-secondary:hover {
+    color: var(--color-parchment-100);
+    text-decoration: none;
+  }
+
+  /* Wskaźnik scrolla */
+  .hero-scroll-indicator {
+    color: color-mix(in srgb, var(--color-parchment-300, #ddd0b8) 40%, transparent);
+    transition: color 0.3s ease;
+    text-decoration: none;
+  }
+  .hero-scroll-indicator:hover {
+    color: var(--color-gold-400);
+    text-decoration: none;
+  }
 </style>
