@@ -4,22 +4,20 @@ interface Props {
   title?: string;
   source?: 'polona' | 'archive';
 }
+const { url, title = "Zasób cyfrowy", source = 'archive' } = Astro.props;
 
-const { 
-  url, 
-  title = "Zasób cyfrowy", 
-  source = 'archive' 
-} = Astro.props;
+const embedId = `embed-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
 <figure class="w-full max-w-4xl mx-auto my-8">
-  <div 
+  <div
     class:list={[
-      "rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700",
+      "relative rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700 group",
       source === 'polona' ? 'aspect-[3/4]' : 'aspect-[4/3]'
     ]}
   >
     <iframe
+      id={embedId}
       src={url}
       title={title}
       width="100%"
@@ -29,17 +27,151 @@ const {
       referrerpolicy="no-referrer"
       class="border-0 w-full h-full block"
     ></iframe>
+
+    <!-- Przycisk pełnego ekranu -->
+    <button
+      data-fullscreen-btn
+      data-embed-id={embedId}
+      data-url={url}
+      data-title={title}
+      aria-label="Otwórz w trybie pełnoekranowym"
+      class="absolute top-3 right-3 z-10
+             flex items-center gap-1.5
+             px-3 py-1.5 rounded-md text-xs font-medium
+             bg-black/60 hover:bg-black/80
+             text-white backdrop-blur-sm
+             transition-all duration-200
+             opacity-0 group-hover:opacity-100
+             focus:opacity-100"
+    >
+      <!-- Ikona rozwinięcia -->
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+      </svg>
+      Pełny ekran
+    </button>
   </div>
-  
+
   <figcaption class="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center">
-    Źródło: 
-    <a 
-      href={url} 
-      target="_blank" 
-      rel="noopener noreferrer" 
+    Źródło:
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
       class="text-blue-600 dark:text-blue-400 hover:underline"
     >
       {source === 'polona' ? 'Polona.pl' : 'Archive.org'}
     </a>
   </figcaption>
 </figure>
+
+<!-- Modal pełnoekranowy (jeden na całą stronę, tworzony przez JS) -->
+<div
+  id="fullscreen-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Podgląd dokumentu"
+  class="fixed inset-0 z-[9999] hidden flex-col bg-black"
+>
+  <!-- Pasek górny -->
+  <div class="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-700 shrink-0">
+    <span id="fullscreen-title" class="text-white text-sm font-medium truncate max-w-[70%]"></span>
+    <div class="flex items-center gap-2">
+      <!-- Otwórz w nowej karcie -->
+      <a
+        id="fullscreen-open-link"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
+               bg-gray-700 hover:bg-gray-600 text-white transition-colors duration-150"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+        Otwórz źródło
+      </a>
+      <!-- Zamknij -->
+      <button
+        id="fullscreen-close"
+        aria-label="Zamknij podgląd"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
+               bg-gray-700 hover:bg-red-700 text-white transition-colors duration-150"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+        Zamknij
+      </button>
+    </div>
+  </div>
+
+  <!-- iframe -->
+  <div class="flex-1 overflow-hidden">
+    <iframe
+      id="fullscreen-iframe"
+      src=""
+      title=""
+      width="100%"
+      height="100%"
+      sandbox="allow-scripts allow-same-origin allow-popups"
+      referrerpolicy="no-referrer"
+      class="border-0 w-full h-full block"
+    ></iframe>
+  </div>
+</div>
+
+<script>
+  // Inicjalizuj tylko raz, nawet jeśli komponent użyty wielokrotnie
+  if (!window.__archiveEmbedInit) {
+    window.__archiveEmbedInit = true;
+
+    const modal       = document.getElementById('fullscreen-modal');
+    const modalIframe = document.getElementById('fullscreen-iframe');
+    const modalTitle  = document.getElementById('fullscreen-title');
+    const modalLink   = document.getElementById('fullscreen-open-link');
+    const closeBtn    = document.getElementById('fullscreen-close');
+
+    function openModal(url, title) {
+      modalIframe.src   = url;
+      modalIframe.title = title;
+      modalTitle.textContent = title;
+      modalLink.href = url;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      modalIframe.src = '';
+      document.body.style.overflow = '';
+    }
+
+    // Delegacja zdarzeń — obsługuje przyciski dodane po załadowaniu
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-fullscreen-btn]');
+      if (btn) {
+        openModal(btn.dataset.url, btn.dataset.title);
+      }
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+
+    // Zamknij przez Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    // Zamknij przez kliknięcie tła (nie paska)
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+  }
+</script>
