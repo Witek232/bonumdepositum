@@ -44,9 +44,7 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <meta property="twitter:description" content={description} />
   <meta property="twitter:image" content={new URL(image, Astro.site)} />
 
-  <!-- USUNIĘTO LINKI DO GOOGLE FONTS - czcionka ładuje się teraz lokalnie z global.css -->
-  
-  <!-- Alpine.js: musi być w <head> bez defer, żeby x-data na <body> nie migotało -->
+  <!-- Alpine.js -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <!-- Zapobiegaj FOUC (flash of unstyled dark mode) -->
@@ -69,13 +67,13 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <Navigation currentPath={Astro.url.pathname} lang={lang} />
 
   <!-- 
-    Główna treść: Karta Pergaminu.
-    Klasa "main-content" (z global.css) przełącza tło między pergaminem a ciemnym granatem.
-    Cień i zaokrąglenie dają efekt "kartki nałożonej na ciemny stół".
-    Brak klasy "container" pozwala Hero.astro na rozciąganie na pełną szerokość.
+    Karta Pergaminu: Zewnętrzny <main> daje tło i cień na całą szerokość.
+    Wewnętrzny <div> ogranicza tekst do max-w-4xl (ok. 896px) dla czytelności.
   -->
-  <main class="main-content min-h-screen shadow-2xl rounded-t-2xl pt-20">
-    <slot />
+  <main class="main-content min-h-screen shadow-2xl rounded-t-2xl pt-20 pb-12">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <slot />
+    </div>
   </main>
 
   <Footer lang={lang} />
