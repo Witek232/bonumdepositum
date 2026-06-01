@@ -1,6 +1,5 @@
 ---
 import Navigation from '../components/Navigation.astro';
-import Hero from '../components/Hero.astro';
 import Footer from '../components/Footer.astro';
 import ScrollToTop from '../components/ScrollToTop.astro';
 import '../styles/global.css';
@@ -24,7 +23,7 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="generator" content={Astro.generator} />
-  
+
   <link rel="canonical" href={canonicalURL} />
   <title>{title} | {siteName}</title>
   <meta name="description" content={description} />
@@ -49,31 +48,35 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Alpine.js: musi być w <head> bez defer, żeby x-data na <body> nie migotało -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Zapobiegaj FOUC (flash of unstyled dark mode) -->
+  <script is:inline>
+    (function () {
+      const dark = localStorage.getItem('darkMode') === 'true';
+      if (dark) document.documentElement.classList.add('dark');
+    })();
+  </script>
 </head>
 
-<!-- Zmieniony tag body - Alpine.js obsługuje teraz nawigację i tryb ciemny w jednym miejscu -->
-<body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenuOpen: false }" :class="{ 'dark': darkMode }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', String(val)))">
-  
+<body
+  x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenuOpen: false }"
+  x-bind:class="{ 'dark': darkMode }"
+  x-init="$watch('darkMode', val => {
+    localStorage.setItem('darkMode', String(val));
+    document.documentElement.classList.toggle('dark', val);
+  })"
+>
   <Navigation currentPath={Astro.url.pathname} lang={lang} />
-  
-  <main class="container mx-auto px-4 py-8 max-w-5xl min-h-screen">
-    <slot />
-  </main>
-  
+
+  <!-- Slot bez kontenera — strony same decydują o swoim układzie.
+       Hero.astro wymaga pełnej szerokości (min-h-screen, fixed nav),
+       a pozostałe sekcje owijają się własnym max-w-5xl. -->
+  <slot />
+
   <Footer lang={lang} />
   <ScrollToTop />
-  
-  <!-- Skrypt Alpine.js -->
-  <script>
-    document.addEventListener('alpine:init', () => {
-      Alpine.data('themeToggle', () => ({
-        toggleTheme() {
-          this.darkMode = !this.darkMode;
-          document.documentElement.classList.toggle('dark', this.darkMode);
-        }
-      }));
-    });
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>
 </html>
