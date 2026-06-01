@@ -44,11 +44,8 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <meta property="twitter:description" content={description} />
   <meta property="twitter:image" content={new URL(image, Astro.site)} />
 
-  <!-- Czcionka Noto Serif -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-
+  <!-- USUNIĘTO LINKI DO GOOGLE FONTS - czcionka ładuje się teraz lokalnie z global.css -->
+  
   <!-- Alpine.js: musi być w <head> bez defer, żeby x-data na <body> nie migotało -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -71,10 +68,15 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
 >
   <Navigation currentPath={Astro.url.pathname} lang={lang} />
 
-  <!-- Slot bez kontenera — strony same decydują o swoim układzie.
-       Hero.astro wymaga pełnej szerokości (min-h-screen, fixed nav),
-       a pozostałe sekcje owijają się własnym max-w-5xl. -->
-  <slot />
+  <!-- 
+    Główna treść: Karta Pergaminu.
+    Klasa "main-content" (z global.css) przełącza tło między pergaminem a ciemnym granatem.
+    Cień i zaokrąglenie dają efekt "kartki nałożonej na ciemny stół".
+    Brak klasy "container" pozwala Hero.astro na rozciąganie na pełną szerokość.
+  -->
+  <main class="main-content min-h-screen shadow-2xl rounded-t-2xl pt-20">
+    <slot />
+  </main>
 
   <Footer lang={lang} />
   <ScrollToTop />
