@@ -10,8 +10,14 @@ export interface Props {
   image?: string;
   lang?: 'pl' | 'en' | 'es';
   /**
-   * heroPage: true  → Hero wchodzi pod nav (brak pt-20 na main, brak max-w kontenera)
-   * heroPage: false → podstrona: main dostaje pt-20 i wewnętrzny kontener max-w-4xl
+   * heroPage: true  → strona główna z Hero
+   *   - <main> bez pt-20, bez max-w kontenera, bez bg
+   *   - Hero sam zarządza całą sekcją (min-h:100vh od top:0)
+   *
+   * heroPage: false (domyślnie) → podstrona
+   *   - <main> z pt-20 (kompensacja fixed nav h-20=80px)
+   *   - <main> z klasą main-content (jasne tło parchment)
+   *   - wewnętrzny <div> max-w-4xl ogranicza szerokość tekstu
    */
   heroPage?: boolean;
 }
@@ -78,26 +84,34 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
 >
   <Navigation currentPath={Astro.url.pathname} lang={lang} />
 
-  {heroPage ? (
-    <!--
-      Tryb hero: <main> bez pt-20 i bez kontenera.
-      Hero sam zarządza całą sekcją (min-h:100vh, position:relative).
-      Treść po Hero (sekcje na stronie głównej) muszą same mieć swój padding.
-    -->
-    <main class="min-h-screen overflow-x-hidden">
-      <slot />
-    </main>
-  ) : (
-    <!--
-      Tryb podstrony: pt-20 kompensuje fixed nav (h-20 = 80px).
-      Wewnętrzny kontener ogranicza szerokość tekstu.
-    -->
-    <main class="min-h-screen pt-20 pb-12 overflow-x-hidden">
-      <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+  {heroPage
+    ? (
+      /*
+       * TRYB HERO (strona główna):
+       * - Brak pt-20 → Hero zaczyna od top:0 (nav jest fixed, nie zajmuje miejsca)
+       * - Brak max-w kontenera → Hero ma pełną szerokość viewport
+       * - Brak background → Hero sam ustawia ciemne tło przez własny gradient/obraz
+       * - overflow-x:hidden zamiast clip → zapobiega poziomemu scrollowi
+       */
+      <main class="min-h-screen overflow-x-hidden">
         <slot />
-      </div>
-    </main>
-  )}
+      </main>
+    )
+    : (
+      /*
+       * TRYB PODSTRONY:
+       * - pt-20 = 80px = wysokość fixed nav (h-20) → treść nie jest przykryta
+       * - main-content → klasa z global.css nadaje jasne tło parchment-50
+       * - pb-12 → oddech na dole
+       * - max-w-4xl wewnątrz → optymalana szerokość kolumny dla czytelności
+       */
+      <main class="main-content min-h-screen pt-20 pb-12 overflow-x-hidden">
+        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <slot />
+        </div>
+      </main>
+    )
+  }
 
   <Footer lang={lang} />
   <ScrollToTop />
