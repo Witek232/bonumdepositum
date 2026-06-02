@@ -47,34 +47,45 @@ const t = translations[lang] || translations.pl;
 ---
 
 <!--
-  WAŻNE: Ta sekcja musi być bezpośrednim dzieckiem <main> bez pt-20.
-  W Layout.astro użyj heroPage={true} na stronach z Hero.
-  Hero sam zarządza odstępem od góry przez padding wewnętrzny (pb-header).
+  Wymagania dla rodzica (Layout.astro):
+    heroPage={true} → <main> bez pt-20 i bez max-w kontenera
+  
+  Hero sam odpowiada za:
+    1. Rozciągnięcie na pełen viewport (min-h-screen, width:100%)
+    2. Własne ciemne tło (gradient + obraz)
+    3. Przesunięcie treści poniżej fixed nav przez padding-top na .hero-content
 -->
 <section
   id="home"
   class="hero-section relative flex min-h-screen items-center justify-center overflow-hidden"
 >
-  <!-- Tło -->
-  <div class="absolute inset-0">
+  <!-- =============================================
+       TŁO: obraz + gradienty
+       img.hero-bg ma własne style zerujące globalne
+       margin/border-radius z global.css
+       ============================================= -->
+  <div class="absolute inset-0 z-0">
     <img
       src="/images/hero-bg.jpg"
       alt=""
-      class="h-full w-full object-cover"
+      aria-hidden="true"
+      class="hero-bg h-full w-full object-cover"
       loading="eager"
       fetchpriority="high"
     />
-    <!-- Gradient pionowy: ciemno u góry (pod nav), rozjaśnia się, znów ciemno u dołu -->
+    <!-- Gradient pionowy: bardziej ciemny u góry (za nav), rozjaśnia się, ciemno u dołu -->
     <div class="absolute inset-0 bg-gradient-to-b from-[#0a0804]/85 via-[#0a0804]/55 to-[#0a0804]/90"></div>
+    <!-- Gradient poziomy: przyciemnia boki -->
     <div class="absolute inset-0 bg-gradient-to-r from-[#0a0804]/40 via-transparent to-[#0a0804]/40"></div>
   </div>
 
-  <!--
-    Ornament górny: top-[calc(80px+1.5rem)] = tuż pod nawigacją (nav ma h-20 = 80px).
-    Nie używamy top-24 (96px od góry sekcji), bo sekcja zaczyna się od y=0.
-  -->
+  <!-- =============================================
+       ORNAMENT GÓRNY
+       Pozycjonowany relative do top ekranu:
+       nav h-20 = 80px + 1.5rem buforu wizualnego
+       ============================================= -->
   <div
-    class="absolute left-1/2 -translate-x-1/2 opacity-20 pointer-events-none"
+    class="absolute left-1/2 -translate-x-1/2 z-10 opacity-20 pointer-events-none"
     style="top: calc(80px + 1.5rem);"
     aria-hidden="true"
   >
@@ -86,8 +97,12 @@ const t = translations[lang] || translations.pl;
     </svg>
   </div>
 
-  <!-- Treść — padding-top kompensuje wysokość nav (h-20 = 80px) -->
-  <div class="relative z-10 mx-auto max-w-5xl px-6 text-center hero-content">
+  <!-- =============================================
+       TREŚĆ GŁÓWNA
+       z-index: 10 (nad tłem)
+       padding-top: kompensuje fixed nav (80px + bufor)
+       ============================================= -->
+  <div class="hero-content relative z-10 mx-auto max-w-5xl px-6 text-center w-full">
 
     <p class="hero-tagline animate-fade-in-up delay-200 opacity-0 mb-6 text-sm font-medium uppercase">
       {t.tagline}
@@ -119,7 +134,7 @@ const t = translations[lang] || translations.pl;
   </div>
 
   <!-- Wskaźnik scrollowania -->
-  <div class="absolute bottom-10 left-1/2 -translate-x-1/2">
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10">
     <a href={t.scrollhref} class="hero-scroll-indicator flex flex-col items-center gap-2">
       <span class="text-xs tracking-[0.2em] uppercase">{t.scroll}</span>
       <div class="h-12 w-px bg-gradient-to-b from-[#d4a843]/50 to-transparent"></div>
@@ -128,33 +143,55 @@ const t = translations[lang] || translations.pl;
 
   <!-- Dolna linia dekoracyjna -->
   <div
-    class="absolute right-0 bottom-0 left-0 h-px bg-gradient-to-r from-transparent via-[#c49a38]/30 to-transparent"
+    class="absolute right-0 bottom-0 left-0 z-10 h-px bg-gradient-to-r from-transparent via-[#c49a38]/30 to-transparent"
     aria-hidden="true"
   ></div>
 </section>
 
 <style>
-  /*
-   * HERO-SECTION: pełna szerokość, zaczyna od top:0 strony.
-   * NIE używamy breakout hack (margin-left:-50vw) — jest zbędny gdy <main>
-   * nie ma max-width kontenera owijającego Hero.
-   * overflow-x:hidden na <main> i tak by go blokował.
-   */
+  /* =============================================
+     HERO SECTION
+     - width: 100% — pełna szerokość <main> (bez kontenera max-w)
+     - NIE używamy breakout hack margin:-50vw
+       bo: (1) <main> nie ma max-w, więc jest zbędny
+           (2) overflow-x:hidden na rodzicu i tak by go blokował
+     ============================================= */
   .hero-section {
-    width: 100%;        /* pełna szerokość rodzica (<main> bez kontenera) */
-    /* margin i left/right: auto — czysto, bez hackowania */
+    width: 100%;
   }
 
-  /*
-   * Treść hero: padding-top przesuwa ją poniżej fixed nav.
-   * h-20 = 80px. Dodajemy 1.5rem buforu wizualnego.
-   */
+  /* =============================================
+     HERO CONTENT — kluczowy padding-top
+     h-20 nav = 80px. Dodajemy 2rem buforu.
+     Dzięki temu tekst nie jest przykryty przez fixed nav.
+     To odpowiednik clamp(5.5rem,14vw,8.5rem) z wersji "ar".
+     ============================================= */
   .hero-content {
-    padding-top: calc(80px + 1.5rem);   /* ← kompensacja wysokości nav */
+    padding-top: calc(80px + 2rem);
     padding-bottom: 2rem;
   }
 
-  /* Rozmiary nagłówka */
+  /* =============================================
+     OBRAZ TŁA — reset globalnych stylów img
+     Globalne img { margin:1.5rem; border-radius:0.5rem; }
+     niszczyłyby układ tła. Klasa .hero-bg zeruje to.
+     (Dodatkowe zabezpieczenie obok aria-hidden="true")
+     ============================================= */
+  .hero-bg {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* =============================================
+     TYPOGRAFIA HERO
+     ============================================= */
   .hero-heading {
     font-size: clamp(2.5rem, 8vw, 5rem);
     color: var(--color-parchment-50);
@@ -163,7 +200,6 @@ const t = translations[lang] || translations.pl;
   @media (min-width: 1024px) { .hero-heading { font-size: clamp(3.5rem, 10vw, 7rem); } }
   @media (min-width: 1280px) { .hero-heading { font-size: 4rem; } }
 
-  /* Gradient tekstu w nagłówku */
   .hero-heading-gradient {
     background: linear-gradient(
       to right,
@@ -177,13 +213,11 @@ const t = translations[lang] || translations.pl;
     color: transparent;
   }
 
-  /* Tagline */
   .hero-tagline {
     letter-spacing: 0.35em;
     color: var(--color-gold-400);
   }
 
-  /* Opis */
   .hero-description {
     font-size: 1.125rem;
     color: color-mix(in srgb, var(--color-parchment-200) 70%, transparent);
@@ -192,7 +226,9 @@ const t = translations[lang] || translations.pl;
     .hero-description { font-size: 1.25rem; }
   }
 
-  /* Przycisk główny */
+  /* =============================================
+     PRZYCISKI CTA
+     ============================================= */
   .hero-btn-primary {
     position: relative;
     display: inline-flex;
@@ -220,7 +256,6 @@ const t = translations[lang] || translations.pl;
     text-decoration: none;
   }
 
-  /* Przycisk drugorzędny */
   .hero-btn-secondary {
     display: inline-flex;
     align-items: center;
@@ -240,7 +275,9 @@ const t = translations[lang] || translations.pl;
     text-decoration: none;
   }
 
-  /* Wskaźnik scrolla */
+  /* =============================================
+     WSKAŹNIK SCROLLA
+     ============================================= */
   .hero-scroll-indicator {
     color: color-mix(in srgb, var(--color-parchment-300, #ddd0b8) 40%, transparent);
     transition: color 0.3s ease;
