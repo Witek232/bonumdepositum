@@ -9,9 +9,21 @@ export interface Props {
   description: string;
   image?: string;
   lang?: 'pl' | 'en' | 'es';
+  /**
+   * heroPage: true  → Hero wchodzi pod nav (brak pt-20 na main, brak max-w kontenera)
+   * heroPage: false → podstrona: main dostaje pt-20 i wewnętrzny kontener max-w-4xl
+   */
+  heroPage?: boolean;
 }
 
-const { title, description, image = '/og-image.jpg', lang = 'pl' } = Astro.props;
+const {
+  title,
+  description,
+  image = '/og-image.jpg',
+  lang = 'pl',
+  heroPage = false,
+} = Astro.props;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const siteName = 'Bonum Depositum';
 const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
@@ -47,7 +59,7 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <!-- Alpine.js -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-  <!-- Zapobiegaj FOUC (flash of unstyled dark mode) -->
+  <!-- Zapobiegaj FOUC -->
   <script is:inline>
     (function () {
       const dark = localStorage.getItem('darkMode') === 'true';
@@ -66,15 +78,26 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
 >
   <Navigation currentPath={Astro.url.pathname} lang={lang} />
 
-  <!-- 
-    Karta Pergaminu: Zewnętrzny <main> daje tło i cień na całą szerokość.
-    Wewnętrzny <div> ogranicza tekst do max-w-4xl (ok. 896px) dla czytelności.
-  -->
- <main class="main-content min-h-screen shadow-2xl rounded-t-2xl pb-12 pt-20 overflow-x-hidden">
-    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+  {heroPage ? (
+    <!--
+      Tryb hero: <main> bez pt-20 i bez kontenera.
+      Hero sam zarządza całą sekcją (min-h:100vh, position:relative).
+      Treść po Hero (sekcje na stronie głównej) muszą same mieć swój padding.
+    -->
+    <main class="min-h-screen overflow-x-hidden">
       <slot />
-    </div>
-  </main>
+    </main>
+  ) : (
+    <!--
+      Tryb podstrony: pt-20 kompensuje fixed nav (h-20 = 80px).
+      Wewnętrzny kontener ogranicza szerokość tekstu.
+    -->
+    <main class="min-h-screen pt-20 pb-12 overflow-x-hidden">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <slot />
+      </div>
+    </main>
+  )}
 
   <Footer lang={lang} />
   <ScrollToTop />
