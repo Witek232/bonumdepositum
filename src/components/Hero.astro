@@ -46,6 +46,11 @@ const translations = {
 const t = translations[lang] || translations.pl;
 ---
 
+<!--
+  WAŻNE: Ta sekcja musi być bezpośrednim dzieckiem <main> bez pt-20.
+  W Layout.astro użyj heroPage={true} na stronach z Hero.
+  Hero sam zarządza odstępem od góry przez padding wewnętrzny (pb-header).
+-->
 <section
   id="home"
   class="hero-section relative flex min-h-screen items-center justify-center overflow-hidden"
@@ -59,12 +64,20 @@ const t = translations[lang] || translations.pl;
       loading="eager"
       fetchpriority="high"
     />
-    <div class="absolute inset-0 bg-gradient-to-b from-[#0a0804]/80 via-[#0a0804]/60 to-[#0a0804]/90"></div>
+    <!-- Gradient pionowy: ciemno u góry (pod nav), rozjaśnia się, znów ciemno u dołu -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#0a0804]/85 via-[#0a0804]/55 to-[#0a0804]/90"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-[#0a0804]/40 via-transparent to-[#0a0804]/40"></div>
   </div>
 
-  <!-- Ornament górny -->
-  <div class="absolute top-24 left-1/2 -translate-x-1/2 opacity-20 pointer-events-none" aria-hidden="true">
+  <!--
+    Ornament górny: top-[calc(80px+1.5rem)] = tuż pod nawigacją (nav ma h-20 = 80px).
+    Nie używamy top-24 (96px od góry sekcji), bo sekcja zaczyna się od y=0.
+  -->
+  <div
+    class="absolute left-1/2 -translate-x-1/2 opacity-20 pointer-events-none"
+    style="top: calc(80px + 1.5rem);"
+    aria-hidden="true"
+  >
     <svg width="200" height="40" viewBox="0 0 200 40" fill="none">
       <path d="M0 20 H80 M120 20 H200" stroke="#d4a843" stroke-width="1" />
       <circle cx="100" cy="20" r="8" stroke="#d4a843" stroke-width="1" fill="none" />
@@ -73,8 +86,8 @@ const t = translations[lang] || translations.pl;
     </svg>
   </div>
 
-  <!-- Treść -->
-  <div class="relative z-10 mx-auto max-w-5xl px-6 text-center">
+  <!-- Treść — padding-top kompensuje wysokość nav (h-20 = 80px) -->
+  <div class="relative z-10 mx-auto max-w-5xl px-6 text-center hero-content">
 
     <p class="hero-tagline animate-fade-in-up delay-200 opacity-0 mb-6 text-sm font-medium uppercase">
       {t.tagline}
@@ -98,7 +111,6 @@ const t = translations[lang] || translations.pl;
       </a>
       <a href={t.cta2href} class="hero-btn-secondary">
         {t.cta2}
-        <!-- Ikona ChevronDown inline -->
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
         </svg>
@@ -122,16 +134,24 @@ const t = translations[lang] || translations.pl;
 </section>
 
 <style>
-  /* =========================================
-     ROZWIĄZANIE: Wyjście poza ewentualne marginesy i rozciągnięcie na pełen ekran
-     ========================================= */
+  /*
+   * HERO-SECTION: pełna szerokość, zaczyna od top:0 strony.
+   * NIE używamy breakout hack (margin-left:-50vw) — jest zbędny gdy <main>
+   * nie ma max-width kontenera owijającego Hero.
+   * overflow-x:hidden na <main> i tak by go blokował.
+   */
   .hero-section {
-    width: 100vw; /* Rozciągnij na całą szerokość okna przeglądarki */
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    width: 100%;        /* pełna szerokość rodzica (<main> bez kontenera) */
+    /* margin i left/right: auto — czysto, bez hackowania */
+  }
+
+  /*
+   * Treść hero: padding-top przesuwa ją poniżej fixed nav.
+   * h-20 = 80px. Dodajemy 1.5rem buforu wizualnego.
+   */
+  .hero-content {
+    padding-top: calc(80px + 1.5rem);   /* ← kompensacja wysokości nav */
+    padding-bottom: 2rem;
   }
 
   /* Rozmiary nagłówka */
