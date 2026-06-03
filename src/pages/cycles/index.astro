@@ -22,6 +22,7 @@ const t = {
   description={t.description}
   lang="pl"
   image="/og-image.jpg"
+  heroPage={true}
 >
   {/* ====== HERO — pełna szerokość, ciemny ====== */}
   <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
@@ -66,7 +67,7 @@ const t = {
   </section>
 
   {/* ====== LISTA CYKLI — jasna, pionowa ====== */}
-  <main class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-16 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
+  <div class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-16 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
       {filtered.length === 0 ? (
         <p class="text-center text-ink-700/60">{t.empty}</p>
@@ -131,7 +132,7 @@ const t = {
         </div>
       )}
     </div>
-  </main>
+  </div>
 </Layout>
 
 <style>
