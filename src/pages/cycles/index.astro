@@ -1,0 +1,121 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const cycles = await getCollection('cycles');
+const filtered = cycles
+  .filter((c) => c.data.lang === 'pl')
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+const t = {
+  title: 'Cykle tematyczne',
+  subtitle: 'Systematyczne ścieżki poznania',
+  description:
+    'Od katechizmu po historię filozofii — wybierz cykl i podążaj uporządkowaną drogą przez dziedziny mądrości.',
+  empty: 'Brak dostępnych cykli w tym języku.',
+  cta: 'Rozpocznij cykl',
+  lessons: 'lekcji',
+};
+---
+
+<Layout
+  title={t.title}
+  description={t.description}
+  lang="pl"
+  image="/og-image.jpg"
+>
+  <div class="relative bg-parchment-50 pt-20 pb-24 lg:pb-32 overflow-hidden">
+    <!-- Subtelna tekstura -->
+    <div
+      class="absolute inset-0 opacity-[0.03] pointer-events-none"
+      style="background-image: radial-gradient(circle at 1px 1px, #2c2418 1px, transparent 0); background-size: 40px 40px;"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+      <!-- Nagłówek -->
+      <div class="max-w-2xl mb-16 lg:mb-20">
+        <p
+          class="mb-4 text-xs font-semibold tracking-[0.3em] text-gold-600 uppercase"
+        >
+          {t.subtitle}
+        </p>
+        <h1
+          class="font-display text-4xl font-bold leading-tight tracking-tight text-ink-900 lg:text-5xl"
+        >
+          {t.title}
+        </h1>
+        <div
+          class="mt-8 h-px w-20 bg-gradient-to-r from-gold-500 to-transparent"
+        >
+        </div>
+        <p class="mt-8 text-lg leading-relaxed text-ink-700/80">
+          {t.description}
+        </p>
+      </div>
+
+      <!-- Lista cykli -->
+      {
+        filtered.length === 0 ? (
+          <p class="text-center text-ink-700/60">{t.empty}</p>
+        ) : (
+          <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((cycle) => (
+              <a
+                href={`/cycles/${cycle.id}/`}
+                class="group relative flex flex-col rounded-2xl border border-parchment-300/40 bg-white shadow-sm shadow-ink-900/5 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-ink-900/10 overflow-hidden"
+              >
+                {/* Cover */}
+                <div class="relative aspect-[16/10] overflow-hidden bg-ink-950">
+                  {cycle.data.coverImage ? (
+                    <img
+                      src={cycle.data.coverImage}
+                      alt=""
+                      class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  ) : null}
+                  <div class="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-ink-950/20 to-transparent" />
+                  <div class="absolute bottom-4 left-4 right-4">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-ink-950/60 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-parchment-100 backdrop-blur-sm border border-parchment-200/10">
+                      <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                      Cykl
+                    </span>
+                  </div>
+                </div>
+
+                {/* Treść */}
+                <div class="flex flex-1 flex-col p-6">
+                  <h2 class="font-display text-xl font-bold text-ink-900 group-hover:text-gold-700 transition-colors">
+                    {cycle.data.title}
+                  </h2>
+                  <p class="mt-3 text-sm leading-relaxed text-ink-700/70 line-clamp-3">
+                    {cycle.data.description}
+                  </p>
+                  <div class="mt-auto pt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gold-600 group-hover:text-gold-500 transition-colors">
+                    {t.cta}
+                    <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</Layout>
+
+<style>
+  img {
+    margin: 0;
+    border-radius: 0;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
