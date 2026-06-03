@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
 import Fundament from '../components/Fundament.astro';
 import { getCollection } from 'astro:content';
 
@@ -19,6 +20,7 @@ const latestPosts = allPosts.sort((a, b) =>
   
   <!-- 1. HERO na pełnej szerokości, dotyka samej góry pod nawigacją -->
   <Hero />
+  <About />
   <!-- Filary — ciemna sekcja na pełnej szerokości -->
   <Fundament />
 
