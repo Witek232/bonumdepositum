@@ -79,18 +79,13 @@ const iconPaths: Record<Pillar['icon'], string> = {
   </div>
 
   <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-    <!-- Nagłówek sekcji -->
-    <div class="fundament-header mb-20 text-center">
-      <p
-        class="mb-4 text-xs font-semibold tracking-[0.3em] text-gold-400 uppercase"
-      >
-        Trzy filary
-      </p>
-      <h2
-        class="font-display text-4xl font-bold leading-tight tracking-tight text-parchment-50 lg:text-5xl"
-      >
-        Fundamenty naszej drogi
-      </h2>
+        <!-- Nagłówek sekcji -->
+        <div class="fundament-header mb-20 text-center">
+          <h2
+            class="font-display text-4xl font-bold leading-tight tracking-tight lg:text-5xl"
+          >
+            Fundamenty
+          </h2>
       <p
         class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-parchment-200/50"
       >
@@ -208,6 +203,11 @@ const iconPaths: Record<Pillar['icon'], string> = {
      (zabezpieczenie przy lg:direction-rtl) — wymuszamy ltr w treści */
   .fundament-card > div {
     direction: ltr;
+  }
+
+  /* Wymuszamy jasny kolor nagłówka niezależnie od globalnych stylów h2 */
+  .fundament-header h2 {
+    color: var(--color-parchment-50);
   }
 </style>
 
