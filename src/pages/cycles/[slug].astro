@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const cycles = await getCollection('cycles');
+  return cycles.map((entry) => ({
+    params: { slug: entry.id },
+    props: { cycle: entry },
+  }));
+}
+
+const { cycle } = Astro.props;
+const allLessons = await getCollection('blog');
+
+// Powiązane lekcje — dopasowanie przez referencję lub pole cycle
+const lessons = allLessons
+  .filter((l) => {
+    const c = l.data.cycle;
+    // reference('cycles') może być obiektem z .id lub stringiem
+    if (!c) return false;
+    return typeof c === 'string' ? c === cycle.id : c.id === cycle.id;
+  })
+  .sort((a, b) => {
+    // Sortowanie: lessonNumber > pubDate > tytuł
+    const na = (a.data as any).lessonNumber;
+    const nb = (b.data as any).lessonNumber;
+    if (typeof na === 'number' && typeof nb === 'number') return na - nb;
+    return a.data.pubDate.getTime() - b.data.pubDate.getTime();
+  });
+
+const t = {
+  back: 'Wszystkie cykle',
+  meta: {
+    author: 'Autor',
+    date: 'Data',
+    read: 'Czytaj',
+    video: 'Wideo',
+    audio: 'Audio',
+  },
+};
+---
+
+<Layout
+  title={cycle.data.title}
+  description={cycle.data.description}
+  lang={cycle.data.lang ?? 'pl'}
+  image={cycle.data.coverImage ?? '/og-image.jpg'}
+>
+  {/* Hero cyklu */}
+  <section class="relative bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden">
+    {/* Siatka kropek */}
+    <div
+      class="absolute inset-0 opacity-[0.03] pointer-events-none"
+      style="background-image: radial-gradient(circle at 1px 1px, #d4a843 0.5px, transparent 0); background-size: 60px 60px;"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+      <a
+        href="/cycles/"
+        class="inline-flex items-center gap-1.5 text-sm text-parchment-200/50 hover:text-gold-400 transition-colors mb-10"
+      >
+        <svg class="h-4 w-4 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        {t.back}
+      </a>
+
+      <div class="grid gap-12 lg:grid-cols-5 lg:gap-16 items-start">
+        {/* Okładka */}
+        <div class="lg:col-span-2">
+          <div class="relative overflow-hidden rounded-2xl shadow-2xl shadow-ink-950/50 ring-1 ring-parchment-200/10">
+            {cycle.data.coverImage ? (
+              <img
+                src={cycle.data.coverImage}
+                alt=""
+                class="aspect-[4/5] w-full object-cover"
+                loading="eager"
+              />
+            ) : (
+              <div class="aspect-[4/5] w-full bg-ink-900 flex items-center justify-center">
+                <svg class="h-20 w-20 text-parchment-200/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </div>
+            )}
+            <div class="absolute inset-0 bg-gradient-to-t from-ink-950/60 via-transparent to-ink-950/10" />
+          </div>
+        </div>
+
+        {/* Metadane */}
+        <div class="lg:col-span-3">
+          <p class="mb-4 text-xs font-semibold tracking-[0.3em] text-gold-400 uppercase">
+            Cykl tematyczny
+          </p>
+          <h1 class="font-display text-4xl font-bold leading-tight tracking-tight text-parchment-50 lg:text-5xl">
+            {cycle.data.title}
+          </h1>
+          <div class="mt-8 h-px w-20 bg-gradient-to-r from-gold-500 to-transparent" />
+          <p class="mt-8 text-lg leading-relaxed text-parchment-200/70 max-w-2xl">
+            {cycle.data.description}
+          </p>
+          <div class="mt-10 flex items-center gap-6 text-sm text-parchment-200/50">
+            <span class="flex items-center gap-2">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              {lessons.length} lekcji
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Lista lekcji */}
+  <section class="relative bg-parchment-50 py-20 lg:py-28 overflow-hidden">
+    <div
+      class="absolute inset-0 opacity-[0.03] pointer-events-none"
+      style="background-image: radial-gradient(circle at 1px 1px, #2c2418 1px, transparent 0); background-size: 40px 40px;"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+      <h2 class="font-display text-2xl font-bold tracking-tight text-ink-900 mb-10 lg:mb-14">
+        Lekcje w cyklu
+      </h2>
+
+      {lessons.length === 0 ? (
+        <p class="text-ink-700/60">Wkrótce pojawią się pierwsze lekcje.</p>
+      ) : (
+        <div class="space-y-6">
+          {lessons.map((lesson, idx) => {
+            const hasVideo = Boolean((lesson.data as any).videoId);
+            const hasAudio = Boolean(lesson.data.audioUrl);
+            const lessonNumber = (lesson.data as any).lessonNumber ?? idx + 1;
+
+            return (
+              <a
+                href={`/blog/${lesson.id}/`}
+                class="group flex flex-col md:flex-row gap-6 md:gap-8 items-start p-6 md:p-8 rounded-2xl border border-parchment-300/30 bg-white shadow-sm shadow-ink-900/5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ink-900/5 hover:border-parchment-300/60"
+              >
+                {/* Numer */}
+                <div class="flex-shrink-0 w-16 h-16 rounded-xl bg-ink-950 flex items-center justify-center shadow-inner">
+                  <span class="font-display text-2xl font-bold text-gold-400">
+                    {String(lessonNumber).padStart(2, '0')}
+                  </span>
+                </div>
+
+                {/* Treść */}
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-wrap items-center gap-3 mb-2">
+                    <h3 class="font-display text-lg font-bold text-ink-900 group-hover:text-gold-700 transition-colors">
+                      {lesson.data.title}
+                    </h3>
+                    {hasVideo && (
+                      <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-red-700 border border-red-200/60">
+                        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        {t.meta.video}
+                      </span>
+                    )}
+                    {hasAudio && (
+                      <span class="inline-flex items-center gap-1 rounded-full bg-gold-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-gold-700 border border-gold-200/60">
+                        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                        {t.meta.audio}
+                      </span>
+                    )}
+                  </div>
+                  <p class="text-sm leading-relaxed text-ink-700/70 line-clamp-2">
+                    {lesson.data.description}
+                  </p>
+                  <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-700/50">
+                    {lesson.data.author && (
+                      <span class="flex items-center gap-1">
+                        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        {lesson.data.author}
+                      </span>
+                    )}
+                    <span class="flex items-center gap-1">
+                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                      {lesson.data.pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </span>
+                    <span class="ml-auto md:ml-0 flex items-center gap-1 font-medium text-gold-600 group-hover:text-gold-500 transition-colors">
+                      {t.meta.read}
+                      <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  img {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
