@@ -1,0 +1,266 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LiteYouTube from '../../components/LiteYouTube.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('blog');
+  return entries.map((entry) => ({
+    params: { slug: entry.id }, // "katechizm/katechizm-lekcja-01" lub "nazwa-wpisu"
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// === NAWIGACJA PREV / NEXT w obrębie cyklu ===
+let prev = null;
+let next = null;
+
+if (entry.data.cycle) {
+  const all = await getCollection('blog', ({ data }) => {
+    if (!data.cycle) return false;
+    const target =
+      typeof entry.data.cycle === 'string'
+        ? entry.data.cycle
+        : entry.data.cycle.id;
+    const current =
+      typeof data.cycle === 'string' ? data.cycle : data.cycle.id;
+    return current === target;
+  });
+
+  all.sort(
+    (a, b) =>
+      ((a.data as any).lessonNumber ?? 0) -
+      ((b.data as any).lessonNumber ?? 0)
+  );
+
+  const idx = all.findIndex((p) => p.id === entry.id);
+  if (idx > 0) prev = all[idx - 1];
+  if (idx >= 0 && idx < all.length - 1) next = all[idx + 1];
+}
+
+// Czy lekcja ma wideo?
+const hasVideo = Boolean((entry.data as any).videoId);
+const videoId = (entry.data as any).videoId;
+const videoDuration = (entry.data as any).videoDuration;
+
+// Tłumaczenia mini-nav
+const navT = {
+  prev: '← Poprzednia lekcja',
+  next: 'Następna lekcja →',
+  backToCycle: 'Wróć do cyklu',
+  video: 'Materiał wideo',
+  audio: 'Odsłuch audio',
+};
+---
+
+<Layout
+  title={entry.data.title}
+  description={entry.data.description}
+  lang={entry.data.lang ?? 'pl'}
+  image={entry.data.image ?? '/og-image.jpg'}
+>
+  <article class="relative bg-parchment-50 min-h-screen pb-24 overflow-hidden">
+    {/* Subtelna tekstura tła */}
+    <div
+      class="absolute inset-0 opacity-[0.03] pointer-events-none"
+      style="background-image: radial-gradient(circle at 1px 1px, #2c2418 1px, transparent 0); background-size: 40px 40px;"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto max-w-3xl px-6 lg:px-8 pt-24 lg:pt-32">
+      {/* Nagłówek */}
+      <header class="mb-12">
+        {(entry.data as any).lessonNumber && (
+          <p class="mb-3 text-xs font-semibold tracking-[0.25em] text-gold-600 uppercase">
+            Lekcja {String((entry.data as any).lessonNumber).padStart(2, '0')}
+          </p>
+        )}
+        <h1
+          class="font-display text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-ink-900"
+        >
+          {entry.data.title}
+        </h1>
+
+        <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-700/60">
+          {entry.data.author && (
+            <span class="flex items-center gap-1.5">
+              <svg class="h-4 w-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              {entry.data.author}
+            </span>
+          )}
+          <span class="flex items-center gap-1.5">
+            <svg class="h-4 w-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            {entry.data.pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </span>
+          {hasVideo && (
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-red-700 border border-red-200/60">
+              <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Wideo
+            </span>
+          )}
+          {entry.data.audioUrl && (
+            <span class="inline-flex items-center gap-1 rounded-full bg-gold-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-gold-700 border border-gold-200/60">
+              <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              Audio
+            </span>
+          )}
+        </div>
+
+        {/* Separator */}
+        <div class="mt-8 h-px w-full bg-gradient-to-r from-gold-500/40 via-parchment-300/60 to-transparent"></div>
+      </header>
+
+        {/* Wideo (jeśli istnieje) */}
+      {hasVideo && (
+        <div class="mb-12">
+          <LiteYouTube videoid={videoId} title={entry.data.title} />
+          {videoDuration && (
+            <div class="px-4 py-2 bg-ink-950 text-xs text-parchment-200/50 text-right tracking-wider rounded-b-2xl -mt-2 border-x border-b border-parchment-300/30">
+              {videoDuration}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Audio (placeholder) */}
+      {entry.data.audioUrl && (
+        <div class="mb-12 p-5 rounded-xl border border-gold-500/20 bg-gold-500/5">
+          <p class="text-xs font-semibold uppercase tracking-wider text-gold-700 mb-2">{navT.audio}</p>
+          <audio controls class="w-full" src={entry.data.audioUrl} />
+        </div>
+      )}
+
+      {/* Treść artykułu */}
+      <div class="prose-custom text-ink-800 leading-relaxed text-lg">
+        <Content />
+      </div>
+
+      {/* Nawigacja prev / next */}
+      {(prev || next) && (
+        <nav
+          class="mt-16 pt-10 border-t border-parchment-300/50"
+          aria-label="Nawigacja w cyklu"
+        >
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+            {prev ? (
+              <a
+                href={`/blog/${prev.id}/`}
+                class="group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-parchment-300/40 bg-white px-5 py-4 shadow-sm transition-all duration-300 hover:border-gold-500/30 hover:shadow-md hover:-translate-y-0.5 flex-1"
+              >
+                <span class="text-gold-600 text-lg font-display font-bold shrink-0">←</span>
+                <div class="min-w-0">
+                  <span class="block text-[10px] font-semibold uppercase tracking-wider text-ink-700/40">Poprzednia</span>
+                  <span class="block text-sm font-semibold text-ink-900 group-hover:text-gold-700 transition-colors truncate">{prev.data.title}</span>
+                </div>
+              </a>
+            ) : (
+              <div class="flex-1" />
+            )}
+
+            {entry.data.cycle && (
+              <a
+                href={`/cycles/${typeof entry.data.cycle === 'string' ? entry.data.cycle : entry.data.cycle.id}/`}
+                class="hidden sm:inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-ink-700/40 hover:text-gold-600 transition-colors px-4"
+              >
+                {navT.backToCycle}
+              </a>
+            )}
+
+            {next ? (
+              <a
+                href={`/blog/${next.id}/`}
+                class="group flex flex-col sm:flex-row-reverse sm:items-center gap-2 sm:gap-4 rounded-xl border border-parchment-300/40 bg-white px-5 py-4 shadow-sm transition-all duration-300 hover:border-gold-500/30 hover:shadow-md hover:-translate-y-0.5 flex-1 text-right sm:text-right"
+              >
+                <span class="text-gold-600 text-lg font-display font-bold shrink-0">→</span>
+                <div class="min-w-0 sm:text-right">
+                  <span class="block text-[10px] font-semibold uppercase tracking-wider text-ink-700/40">Następna</span>
+                  <span class="block text-sm font-semibold text-ink-900 group-hover:text-gold-700 transition-colors truncate">{next.data.title}</span>
+                </div>
+              </a>
+            ) : (
+              <div class="flex-1" />
+            )}
+          </div>
+
+          {/* Mobile: powrót do cyklu pod przyciskami */}
+          {entry.data.cycle && (
+            <div class="sm:hidden mt-4 text-center">
+              <a
+                href={`/cycles/${typeof entry.data.cycle === 'string' ? entry.data.cycle : entry.data.cycle.id}/`}
+                class="text-xs font-semibold uppercase tracking-wider text-ink-700/40 hover:text-gold-600 transition-colors"
+              >
+                {navT.backToCycle}
+              </a>
+            </div>
+          )}
+        </nav>
+      )}
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .prose-custom :global(h2) {
+    font-size: 1.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-ink-900);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .prose-custom :global(h3) {
+    font-size: 1.35rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-ink-800);
+    font-weight: 700;
+  }
+  .prose-custom :global(p) {
+    margin-bottom: 1.25em;
+  }
+  .prose-custom :global(strong) {
+    color: var(--color-ink-900);
+    font-weight: 700;
+  }
+  .prose-custom :global(blockquote) {
+    border-left: 3px solid var(--color-gold-500);
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--color-ink-700);
+  }
+  .prose-custom :global(ul, ol) {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25em;
+  }
+  .prose-custom :global(li) {
+    margin-bottom: 0.4rem;
+  }
+  .prose-custom :global(img) {
+    margin: 1.5rem 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  .prose-custom :global(a) {
+    color: var(--color-gold-600);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .prose-custom :global(a:hover) {
+    color: var(--color-gold-500);
+    text-decoration: underline;
+  }
+  .prose-custom :global(hr) {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-parchment-300), transparent);
+    margin: 2.5rem 0;
+  }
+</style>
