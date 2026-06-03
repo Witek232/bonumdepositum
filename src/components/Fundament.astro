@@ -1,0 +1,233 @@
+---
+// =============================================
+// FUNDAMENT — trzy filary (Astro)
+// Zamiast React/lucide-react używamy natywnych SVG
+// i IntersectionObserver do animacji wejścia w viewport
+// =============================================
+
+interface Pillar {
+  icon: 'bookOpen' | 'graduationCap' | 'heart';
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  accent: string;         // np. from-sage-600 to-sage-700
+  accentLight: string;    // np. bg-sage-100 (na przyszłość)
+  accentText: string;     // np. text-sage-700 (na przyszłość)
+  topics: string[];
+}
+
+const pillars: Pillar[] = [
+  {
+    icon: 'bookOpen',
+    title: 'Filozofia',
+    subtitle: 'Φιλοσοφία — umiłowanie mądrości',
+    description:
+      'Od Sokratesa po współczesność — zgłębiamy fundamentalne pytania o naturę rzeczywistości, poznania, etyki i piękna. Filozofia uczy nas myśleć krytycznie i szukać prawdy poza powierzchnią zjawisk.',
+    image: '/images/philosophy.jpg',
+    accent: 'from-sage-600 to-sage-700',
+    accentLight: 'bg-sage-100',
+    accentText: 'text-sage-700',
+    topics: ['Metafizyka', 'Etyka', 'Epistemologia', 'Logika'],
+  },
+  {
+    icon: 'graduationCap',
+    title: 'Edukacja',
+    subtitle: 'Παιδεία — kształtowanie człowieka',
+    description:
+      'Edukacja to nie tylko przekazywanie wiedzy, ale formowanie charakteru. Inspirowani ideałem paidei, tworzymy programy łączące wiedzę klasyczną z wyzwaniami współczesnego świata.',
+    image: '/images/education.jpg',
+    accent: 'from-gold-600 to-gold-700',
+    accentLight: 'bg-parchment-200',
+    accentText: 'text-gold-700',
+    topics: ['Artes Liberales', 'Trivium', 'Quadrivium', 'Paideia'],
+  },
+  {
+    icon: 'heart',
+    title: 'Duchowość',
+    subtitle: 'Πνεῦμα — dusza i duch',
+    description:
+      'Wielkie tradycje religijne i duchowe oferują wgląd w najgłębsze warstwy ludzkiego doświadczenia. Badamy modlitwę, kontemplację i mistykę jako drogi do pełni człowieczeństwa.',
+    image: '/images/religion.jpg',
+    accent: 'from-wine-600 to-wine-700',
+    accentLight: 'bg-red-50',
+    accentText: 'text-wine-700',
+    topics: ['Teologia', 'Mistyka', 'Kontemplacja', 'Liturgia'],
+  },
+];
+
+const iconPaths: Record<Pillar['icon'], string> = {
+  bookOpen:
+    '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  graduationCap:
+    '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
+  heart:
+    '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+};
+---
+
+<section
+  id="pillars"
+  class="fundament-section relative bg-ink-950 py-28 lg:py-36 overflow-hidden"
+>
+  <!-- Tło: kropkowana siatka -->
+  <div
+    class="absolute inset-0 opacity-5 pointer-events-none"
+    style="background-image: radial-gradient(circle at 1px 1px, #d4a843 0.5px, transparent 0); background-size: 60px 60px;"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+    <!-- Nagłówek sekcji -->
+    <div class="fundament-header mb-20 text-center">
+      <p
+        class="mb-4 text-xs font-semibold tracking-[0.3em] text-gold-400 uppercase"
+      >
+        Trzy filary
+      </p>
+      <h2
+        class="font-display text-4xl font-bold leading-tight tracking-tight text-parchment-50 lg:text-5xl"
+      >
+        Fundamenty naszej drogi
+      </h2>
+      <p
+        class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-parchment-200/50"
+      >
+        Każda wielka cywilizacja opierała się na trzech filarach — poszukiwaniu
+        prawdy, kształceniu umysłu i duchowej głębi.
+      </p>
+      <div
+        class="mx-auto mt-8 h-px w-32 bg-gradient-to-r from-transparent via-gold-500/50 to-transparent"
+      >
+      </div>
+    </div>
+
+    <!-- Karty filarów -->
+    <div class="space-y-16 lg:space-y-24">
+      {
+        pillars.map((pillar, index) => {
+          const isEven = index % 2 === 1;
+          const svg = iconPaths[pillar.icon];
+
+          return (
+            <div
+              class={`fundament-card grid items-center gap-12 lg:grid-cols-2 lg:gap-16`}
+              style={`transition-delay: ${(index + 1) * 200}ms;`}
+            >
+              {/* Obraz */}
+              <div
+                class={`relative overflow-hidden rounded-xl shadow-2xl ${isEven ? 'lg:order-2' : ''}`}
+              >
+                <img
+                  src={pillar.image}
+                  alt={pillar.title}
+                  class="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-ink-950/60 via-transparent to-ink-950/20" />
+                <div class="absolute bottom-6 left-6">
+                  <div
+                    class={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${pillar.accent} px-4 py-2 text-xs font-semibold tracking-wider text-white uppercase shadow-lg`}
+                  >
+                    <svg
+                      class="h-3.5 w-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      set:html={svg}
+                    />
+                    {pillar.title}
+                  </div>
+                </div>
+              </div>
+
+              {/* Treść */}
+              <div class={`${isEven ? 'lg:order-1' : ''}`}>
+                <p class="mb-2 font-serif text-sm italic text-gold-400/70">
+                  {pillar.subtitle}
+                </p>
+                <h3 class="font-display text-3xl font-bold tracking-tight text-parchment-50 lg:text-4xl">
+                  {pillar.title}
+                </h3>
+                <div
+                  class={`my-6 h-px w-16 bg-gradient-to-r ${pillar.accent}`}
+                />
+                <p class="text-lg leading-relaxed text-parchment-200/60">
+                  {pillar.description}
+                </p>
+                <div class="mt-8 flex flex-wrap gap-2">
+                  {pillar.topics.map((topic) => (
+                    <span class="rounded-full border border-parchment-200/10 bg-parchment-200/5 px-4 py-1.5 text-xs font-medium tracking-wide text-parchment-300/60">
+                      {topic}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* =============================================
+     ANIMACJE WEJŚCIA (IntersectionObserver)
+     ============================================= */
+  .fundament-header,
+  .fundament-card {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+  }
+
+  /* Gdy sekcja jest widoczna — JS dodaje klasę .is-visible */
+  #pillars.is-visible .fundament-header {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #pillars.is-visible .fundament-card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Usuwamy domyślne marginesy/border-radius od global.css dla obrazów
+     wewnątrz tej sekcji, jeśli przypadkiem trafią pod reguły .main-content */
+  .fundament-section img {
+    margin: 0;
+    border-radius: 0;
+  }
+
+  /* Na wypadek, gdyby karta była w kontenerze z direction: rtl
+     (zabezpieczenie przy lg:direction-rtl) — wymuszamy ltr w treści */
+  .fundament-card > div {
+    direction: ltr;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const section = document.getElementById('pillars');
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(section);
+  })();
+</script>
