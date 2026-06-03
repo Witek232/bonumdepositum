@@ -45,6 +45,7 @@ const t = {
   description={cycle.data.description}
   lang={cycle.data.lang ?? 'pl'}
   image={cycle.data.coverImage ?? '/og-image.jpg'}
+  heroPage={true}
 >
   <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
     {cycle.data.coverImage && (
@@ -105,7 +106,7 @@ const t = {
     />
   </section>
 
-  <main class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-16 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
+  <div class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-16 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold mb-8 border-b-2 border-gold-500 pb-2">
         {t.lessonsTitle}
@@ -175,7 +176,7 @@ const t = {
         </div>
       )}
     </div>
-  </main>
+  </div>
 </Layout>
 
 <style>
