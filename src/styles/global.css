@@ -191,19 +191,22 @@ a:hover {
 }
 
 /* ========================================
-   NAGŁÓWKI (domyślnie na jasnym tle)
-   ======================================== */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
-  line-height: 1.3;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
-  color: var(--color-ink-900);
-}
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
+NAGŁÓWKI (domyślnie na jasnym tle)
+======================================== */
 
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.3;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    color: var(--color-ink-900);
+  }
+
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.5rem; }
+}
 /* ========================================
    AKAPITY I CYTATY
    ======================================== */
