@@ -13,12 +13,19 @@ const blogCollection = defineCollection({
     lang: z.enum(['pl', 'en', 'es']).default('pl'),
     audioUrl: z.string().optional(), // URL do audio lektora
     tags: z.array(z.string()).default([]),
-    image: z.string().optional(),
+    image: z.string().optional(), // Obraz do Open Graph
+    // === NOWE POLA ===
+    lessonNumber: z.number().optional(), // Numer lekcji w cyklu (sortowanie)
+    videoId: z.string().optional(), // YouTube video ID (np. "dQw4w9WgXcQ")
+    videoDuration: z.string().optional(), // "HH:MM:SS" lub "MM:SS"
+    summary: z.string().optional(), // Krótki skrót do listingu (zamiast pełnego opisu)
     // Pola specyficzne dla języków
     'title:en': z.string().optional(),
     'title:es': z.string().optional(),
     'description:en': z.string().optional(),
     'description:es': z.string().optional(),
+    'summary:en': z.string().optional(),
+    'summary:es': z.string().optional(),
   }),
 });
 
@@ -31,6 +38,8 @@ const cyclesCollection = defineCollection({
     coverImage: z.string().optional(),
     order: z.number().default(0),
     lang: z.enum(['pl', 'en', 'es']).default('pl'),
+    // === NOWE POLA ===
+    totalLessons: z.number().optional(), // Planowana liczba lekcji
     // Pola dla tłumaczeń
     'title:en': z.string().optional(),
     'title:es': z.string().optional(),
