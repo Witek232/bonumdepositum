@@ -40,15 +40,13 @@ const t = {
 };
 ---
 
-<<Layout
+<Layout
   title={cycle.data.title}
   description={cycle.data.description}
   lang={cycle.data.lang ?? 'pl'}
   image={cycle.data.coverImage ?? '/og-image.jpg'}
 >
-  {/* HERO CYKLU — pełna szerokość, ciemne tło z okładką */}
   <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
-    {/* Tło: okładka */}
     {cycle.data.coverImage && (
       <div class="absolute inset-0 z-0">
         <img
@@ -62,14 +60,12 @@ const t = {
       </div>
     )}
 
-    {/* Subtelny ornament kropek */}
     <div
       class="absolute inset-0 opacity-[0.02] pointer-events-none z-0"
       style="background-image: radial-gradient(circle at 1px 1px, #d4a843 0.5px, transparent 0); background-size: 60px 60px;"
       aria-hidden="true"
     />
 
-    {/* Ornament górny */}
     <div
       class="absolute left-1/2 -translate-x-1/2 z-10 opacity-20 pointer-events-none"
       style="top: 2rem;"
@@ -83,7 +79,6 @@ const t = {
       </svg>
     </div>
 
-    {/* Treść */}
     <div class="relative z-10 mx-auto max-w-4xl px-6 text-center">
       <a
         href="/cycles/"
@@ -110,7 +105,6 @@ const t = {
     />
   </section>
 
-  {/* LISTA LEKCJI — jasna część */}
   <main class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-16 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold mb-8 border-b-2 border-gold-500 pb-2">
@@ -131,14 +125,12 @@ const t = {
                 href={`/blog/${lesson.id}/`}
                 class="group flex items-start gap-5 rounded-xl border border-parchment-200 bg-parchment-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 p-5"
               >
-                {/* Numer */}
                 <div class="hidden sm:flex flex-shrink-0 w-12 h-12 rounded-lg bg-ink-950 items-center justify-center shadow-inner">
                   <span class="font-display text-xl font-bold text-gold-400">
                     {String(lessonNumber).padStart(2, '0')}
                   </span>
                 </div>
 
-                {/* Treść */}
                 <div class="flex-1 min-w-0">
                   <div class="flex flex-wrap items-center gap-2 mb-1.5">
                     <h3 class="text-lg font-bold text-ink-900 group-hover:text-gold-600 transition-colors leading-snug">
@@ -187,7 +179,10 @@ const t = {
 </Layout>
 
 <style>
-  img { margin: 0; border-radius: 0; }
+  img {
+    margin: 0;
+    border-radius: 0;
+  }
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
