@@ -1,0 +1,301 @@
+---
+// TextToSpeech — komponent czytający treść artykułu przez Web Speech API
+// Umieść nad kontenerem <Content /> w stronie artykułu.
+---
+
+<div
+  class="tts-panel mb-10 rounded-xl border border-gold-500/20 bg-gold-500/5 p-5 transition-opacity duration-300"
+  aria-label="Odtwarzacz tekstu na mowę"
+  role="region"
+>
+  <div class="flex flex-wrap items-center gap-4">
+    {/* Przycisk Play / Pause */}
+    <button
+      id="tts-toggle"
+      class="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-ink-950 text-gold-400 shadow-inner transition-colors hover:bg-ink-900 hover:text-gold-300 focus:outline-none focus:ring-2 focus:ring-gold-500/40"
+      aria-label="Czytaj artykuł"
+      title="Czytaj / Pauza"
+    >
+      <svg id="tts-icon-play" class="h-5 w-5 ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+      <svg id="tts-icon-pause" class="h-5 w-5 hidden" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+      </svg>
+    </button>
+
+    <div class="flex-1 min-w-0">
+      <p class="text-xs font-semibold uppercase tracking-wider text-gold-700 mb-2">
+        Odsłuch tekstu
+      </p>
+      <div class="flex flex-wrap items-center gap-3">
+        {/* Wybór głosu */}
+        <select
+          id="tts-voice"
+          class="h-9 rounded-md border border-parchment-300/50 bg-parchment-50 px-3 text-sm text-ink-800 shadow-sm focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500/40"
+          aria-label="Wybór głosu"
+        >
+          <option value="" disabled>Ładowanie głosów…</option>
+        </select>
+
+        {/* Szybkość */}
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-ink-700/60">Szybkość</span>
+          <input
+            id="tts-rate"
+            type="range"
+            min="0.5"
+            max="1.8"
+            step="0.1"
+            value="1"
+            class="h-1.5 w-24 cursor-pointer appearance-none rounded-full bg-parchment-300 accent-gold-600"
+            aria-label="Szybkość czytania"
+          />
+          <span id="tts-rate-value" class="w-8 text-xs tabular-nums text-ink-700/60">1.0×</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Status / postęp */}
+    <div class="hidden sm:block text-right">
+      <p id="tts-status" class="text-[11px] font-medium uppercase tracking-wider text-ink-700/40">
+        Gotowy
+      </p>
+    </div>
+  </div>
+
+  {/* Ukryty selektor — komponent szuka tekstu w kontenerze oznaczonym data-tts */}
+</div>
+
+<script is:inline>
+  (function () {
+    const synth = window.speechSynthesis;
+    if (!synth) {
+      // API niedostępne — ukryj panel
+      const panel = document.querySelector('.tts-panel');
+      if (panel) panel.style.display = 'none';
+      return;
+    }
+
+    // ====== KONFIGURACJA ======
+    const VOICE_PREFERENCES = [
+      // Polskie głosy — kolejność preferencji
+      { lang: 'pl-PL', nameIncludes: /zosia|pl.*google|polish/i, rank: 10 },
+      { lang: 'pl-PL', nameIncludes: /pl-PL|polski/i, rank: 9 },
+      { lang: 'pl', nameIncludes: /pl|pol/i, rank: 8 },
+      { lang: 'pl-PL', rank: 7 },
+      { lang: 'pl', rank: 6 },
+    ];
+    const DEFAULT_RATE = 1.0;
+
+    // ====== ELEMENTY ======
+    const toggleBtn = document.getElementById('tts-toggle');
+    const iconPlay = document.getElementById('tts-icon-play');
+    const iconPause = document.getElementById('tts-icon-pause');
+    const voiceSelect = document.getElementById('tts-voice');
+    const rateInput = document.getElementById('tts-rate');
+    const rateValue = document.getElementById('tts-rate-value');
+    const statusEl = document.getElementById('tts-status');
+
+    // ====== STAN ======
+    let voices = [];
+    let utterance = null;
+    let isPlaying = false;
+    let paragraphs = [];
+    let currentIndex = 0;
+
+    // ====== ZNAJDŹ TEKST ======
+    // Szuka kontenera oznaczonego data-tts="content" lub fallback na .prose-custom
+    function getTextContainer() {
+      return document.querySelector('[data-tts="content"]') || document.querySelector('.prose-custom');
+    }
+
+    // Ekstrahuje czysty tekst z akapitów, pomija nagłówki, listy, bloki kodu, itp.
+    function extractParagraphs(container) {
+      if (!container) return [];
+      // Weź tylko <p>, <h2>, <h3>, <li> — pomijaj <pre>, <code>, <img>, <figure>, <blockquote> z atrybutami
+      const nodes = container.querySelectorAll('p, h2, h3, li');
+      const out = [];
+      nodes.forEach((node) => {
+        // Pomijamy bloki kodu, cytaty z atrybutami, obrazy
+        if (node.closest('pre, code, figure, .callout, .tts-panel')) return;
+        const text = node.textContent.trim();
+        if (text.length > 0) out.push(text);
+      });
+      return out;
+    }
+
+    // ====== GŁOSY ======
+    function populateVoices() {
+      voices = synth.getVoices();
+      if (!voices.length) return; // jeszcze nie załadowane
+
+      voiceSelect.innerHTML = '';
+
+      // Sortuj według preferencji
+      const scored = voices.map((v) => {
+        let score = 0;
+        for (const pref of VOICE_PREFERENCES) {
+          const matchesLang = v.lang.toLowerCase().startsWith(pref.lang);
+          const matchesName = pref.nameIncludes ? pref.nameIncludes.test(v.name) : true;
+          if (matchesLang && matchesName) {
+            score = Math.max(score, pref.rank);
+          }
+        }
+        return { voice: v, score };
+      }).sort((a, b) => b.score - a.score);
+
+      scored.forEach(({ voice, score }, idx) => {
+        const opt = document.createElement('option');
+        opt.value = voice.name;
+        opt.textContent = `${voice.name} (${voice.lang})${score > 0 ? ' ★' : ''}`;
+        voiceSelect.appendChild(opt);
+      });
+
+      // Wybierz najlepszy polski
+      const firstPolish = scored.find((s) => s.score > 0);
+      if (firstPolish) {
+        voiceSelect.value = firstPolish.voice.name;
+      }
+    }
+
+    // Głosy mogą się załadować asynchronicznie
+    populateVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = populateVoices;
+    }
+
+    // ====== ODCZYT ======
+    function getSelectedVoice() {
+      const name = voiceSelect.value;
+      return voices.find((v) => v.name === name) || voices[0] || null;
+    }
+
+    function speakNext() {
+      if (currentIndex >= paragraphs.length) {
+        stopTTS();
+        statusEl.textContent = 'Zakończono';
+        return;
+      }
+
+      const text = paragraphs[currentIndex];
+      utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = getSelectedVoice();
+      utterance.rate = parseFloat(rateInput.value) || DEFAULT_RATE;
+      utterance.lang = utterance.voice?.lang || 'pl-PL';
+      utterance.pitch = 1;
+
+      utterance.onend = () => {
+        currentIndex++;
+        speakNext();
+      };
+
+      utterance.onerror = (e) => {
+        if (e.error === 'canceled') return; // normalne przy pause
+        console.error('TTS error', e);
+        statusEl.textContent = 'Błąd odczytu';
+        stopTTS();
+      };
+
+      statusEl.textContent = `Czyta ${currentIndex + 1} / ${paragraphs.length}`;
+      synth.speak(utterance);
+    }
+
+    function startTTS() {
+      const container = getTextContainer();
+      if (!container) {
+        statusEl.textContent = 'Brak tekstu';
+        return;
+      }
+      paragraphs = extractParagraphs(container);
+      if (!paragraphs.length) {
+        statusEl.textContent = 'Brak tekstu';
+        return;
+      }
+
+      // Jeśli już był wstrzymany, wznów
+      if (synth.paused) {
+        synth.resume();
+        isPlaying = true;
+        updateUI();
+        return;
+      }
+
+      // Nowy odczyt
+      synth.cancel();
+      currentIndex = 0;
+      isPlaying = true;
+      updateUI();
+      speakNext();
+    }
+
+    function pauseTTS() {
+      if (synth.speaking) {
+        synth.pause();
+        isPlaying = false;
+        statusEl.textContent = 'Wstrzymano';
+        updateUI();
+      }
+    }
+
+    function stopTTS() {
+      synth.cancel();
+      isPlaying = false;
+      currentIndex = 0;
+      statusEl.textContent = 'Gotowy';
+      updateUI();
+    }
+
+    function toggleTTS() {
+      if (isPlaying) {
+        pauseTTS();
+      } else {
+        if (synth.paused && utterance) {
+          synth.resume();
+          isPlaying = true;
+          statusEl.textContent = `Czyta ${currentIndex + 1} / ${paragraphs.length}`;
+          updateUI();
+        } else {
+          startTTS();
+        }
+      }
+    }
+
+    function updateUI() {
+      if (isPlaying) {
+        iconPlay.classList.add('hidden');
+        iconPause.classList.remove('hidden');
+        toggleBtn.setAttribute('aria-label', 'Wstrzymaj czytanie');
+      } else {
+        iconPlay.classList.remove('hidden');
+        iconPause.classList.add('hidden');
+        toggleBtn.setAttribute('aria-label', 'Czytaj artykuł');
+      }
+    }
+
+    // ====== EVENTY ======
+    toggleBtn.addEventListener('click', toggleTTS);
+
+    rateInput.addEventListener('input', () => {
+      rateValue.textContent = parseFloat(rateInput.value).toFixed(1) + '×';
+    });
+
+    // Stop przy opuszczeniu strony
+    window.addEventListener('beforeunload', () => synth.cancel());
+
+    // Automatycznie stop przy zmianie głosu podczas odczytu
+    voiceSelect.addEventListener('change', () => {
+      if (synth.speaking || synth.paused) {
+        stopTTS();
+      }
+    });
+
+    // Reaguj na klawisz Spacja (tylko gdy nie w input)
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && e.target === document.body) {
+        e.preventDefault();
+        toggleTTS();
+      }
+    });
+  })();
+</script>
