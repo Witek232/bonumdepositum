@@ -26,8 +26,24 @@ const t = {
 >
   {/* ====== HERO — pełna szerokość, ciemny ====== */}
   <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
+    {/* Tło obrazkowe */}
+    <div class="absolute inset-0 z-0">
+      <img
+        src="/images/hero-bg.jpg"
+        alt=""
+        aria-hidden="true"
+        class="hero-bg h-full w-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+      />
+      {/* Gradient pionowy: bardziej ciemny u góry (za nav), rozjaśnia się, ciemno u dołu */}
+      <div class="absolute inset-0 bg-gradient-to-b from-ink-950/85 via-ink-950/55 to-ink-950/90" />
+      {/* Gradient poziomy: przyciemnia boki */}
+      <div class="absolute inset-0 bg-gradient-to-r from-ink-950/40 via-transparent to-ink-950/40" />
+    </div>
+
     <div
-      class="absolute inset-0 opacity-[0.03] pointer-events-none"
+      class="absolute inset-0 opacity-[0.03] pointer-events-none z-0"
       style="background-image: radial-gradient(circle at 1px 1px, #d4a843 0.5px, transparent 0); background-size: 60px 60px;"
       aria-hidden="true"
     >
