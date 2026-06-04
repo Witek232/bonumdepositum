@@ -71,17 +71,19 @@ const navT = {
 >
   {/* HERO ARTYKUŁU — pełna szerokość, ciemne tło */}
   <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
-    {/* Subtelne tło z obrazem (jeśli jest) */}
+    {/* Tło obrazkowe z lekcji (jeśli jest) */}
     {entry.data.image && (
       <div class="absolute inset-0 z-0">
         <img
           src={entry.data.image}
           alt=""
-          class="h-full w-full object-cover opacity-15"
+          aria-hidden="true"
+          class="hero-bg h-full w-full object-cover"
           loading="eager"
+          fetchpriority="high"
         />
-        <div class="absolute inset-0 bg-gradient-to-b from-ink-950/85 via-ink-950/90 to-ink-950/95" />
-        <div class="absolute inset-0 bg-gradient-to-r from-ink-950/50 via-transparent to-ink-950/50" />
+        <div class="absolute inset-0 bg-gradient-to-b from-ink-950/85 via-ink-950/55 to-ink-950/90" />
+        <div class="absolute inset-0 bg-gradient-to-r from-ink-950/40 via-transparent to-ink-950/40" />
       </div>
     )}
 
