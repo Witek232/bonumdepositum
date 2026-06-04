@@ -1,6 +1,5 @@
 ---
 // TextToSpeech — komponent czytający treść artykułu przez Web Speech API
-// Umieść nad kontenerem <Content /> w stronie artykułu.
 ---
 
 <div
@@ -12,7 +11,7 @@
     {/* Przycisk Play / Pause */}
     <button
       id="tts-toggle"
-      class="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-ink-950 text-gold-400 shadow-inner transition-colors hover:bg-ink-900 hover:text-gold-300 focus:outline-none focus:ring-2 focus:ring-gold-500/40"
+      class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-ink-950 text-gold-400 shadow-inner transition-colors hover:bg-ink-900 hover:text-gold-300 focus:outline-none focus:ring-2 focus:ring-gold-500/40"
       aria-label="Czytaj artykuł"
       title="Czytaj / Pauza"
     >
@@ -24,19 +23,22 @@
       </svg>
     </button>
 
-    <div class="flex-1 min-w-0">
+    <div class="min-w-0 flex-1">
       <p class="text-xs font-semibold uppercase tracking-wider text-gold-700 mb-2">
         Odsłuch tekstu
       </p>
       <div class="flex flex-wrap items-center gap-3">
-        {/* Wybór głosu */}
-        <select
-          id="tts-voice"
-          class="h-9 rounded-md border border-parchment-300/50 bg-parchment-50 px-3 text-sm text-ink-800 shadow-sm focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500/40"
-          aria-label="Wybór głosu"
-        >
-          <option value="" disabled>Ładowanie głosów…</option>
-        </select>
+        {/* Wybór głosu — zawężony i z truncate */}
+        <div class="min-w-0 max-w-[16rem] sm:max-w-[20rem]">
+          <select
+            id="tts-voice"
+            class="h-9 w-full truncate rounded-md border border-parchment-300/50 bg-parchment-50 px-3 text-sm text-ink-800 shadow-sm focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500/40"
+            aria-label="Wybór głosu"
+            title="Wybór głosu"
+          >
+            <option value="" disabled>Ładowanie głosów…</option>
+          </select>
+        </div>
 
         {/* Szybkość */}
         <div class="flex items-center gap-2">
@@ -48,7 +50,7 @@
             max="1.8"
             step="0.1"
             value="1"
-            class="h-1.5 w-24 cursor-pointer appearance-none rounded-full bg-parchment-300 accent-gold-600"
+            class="h-1.5 w-20 cursor-pointer appearance-none rounded-full bg-parchment-300 accent-gold-600"
             aria-label="Szybkość czytania"
           />
           <span id="tts-rate-value" class="w-8 text-xs tabular-nums text-ink-700/60">1.0×</span>
@@ -57,29 +59,24 @@
     </div>
 
     {/* Status / postęp */}
-    <div class="hidden sm:block text-right">
+    <div class="hidden sm:block text-right shrink-0">
       <p id="tts-status" class="text-[11px] font-medium uppercase tracking-wider text-ink-700/40">
         Gotowy
       </p>
     </div>
   </div>
-
-  {/* Ukryty selektor — komponent szuka tekstu w kontenerze oznaczonym data-tts */}
 </div>
 
 <script is:inline>
   (function () {
     const synth = window.speechSynthesis;
     if (!synth) {
-      // API niedostępne — ukryj panel
       const panel = document.querySelector('.tts-panel');
       if (panel) panel.style.display = 'none';
       return;
     }
 
-    // ====== KONFIGURACJA ======
     const VOICE_PREFERENCES = [
-      // Polskie głosy — kolejność preferencji
       { lang: 'pl-PL', nameIncludes: /zosia|pl.*google|polish/i, rank: 10 },
       { lang: 'pl-PL', nameIncludes: /pl-PL|polski/i, rank: 9 },
       { lang: 'pl', nameIncludes: /pl|pol/i, rank: 8 },
@@ -88,7 +85,6 @@
     ];
     const DEFAULT_RATE = 1.0;
 
-    // ====== ELEMENTY ======
     const toggleBtn = document.getElementById('tts-toggle');
     const iconPlay = document.getElementById('tts-icon-play');
     const iconPause = document.getElementById('tts-icon-pause');
@@ -97,27 +93,21 @@
     const rateValue = document.getElementById('tts-rate-value');
     const statusEl = document.getElementById('tts-status');
 
-    // ====== STAN ======
     let voices = [];
     let utterance = null;
     let isPlaying = false;
     let paragraphs = [];
     let currentIndex = 0;
 
-    // ====== ZNAJDŹ TEKST ======
-    // Szuka kontenera oznaczonego data-tts="content" lub fallback na .prose-custom
     function getTextContainer() {
       return document.querySelector('[data-tts="content"]') || document.querySelector('.prose-custom');
     }
 
-    // Ekstrahuje czysty tekst z akapitów, pomija nagłówki, listy, bloki kodu, itp.
     function extractParagraphs(container) {
       if (!container) return [];
-      // Weź tylko <p>, <h2>, <h3>, <li> — pomijaj <pre>, <code>, <img>, <figure>, <blockquote> z atrybutami
       const nodes = container.querySelectorAll('p, h2, h3, li');
       const out = [];
       nodes.forEach((node) => {
-        // Pomijamy bloki kodu, cytaty z atrybutami, obrazy
         if (node.closest('pre, code, figure, .callout, .tts-panel')) return;
         const text = node.textContent.trim();
         if (text.length > 0) out.push(text);
@@ -125,14 +115,12 @@
       return out;
     }
 
-    // ====== GŁOSY ======
     function populateVoices() {
       voices = synth.getVoices();
-      if (!voices.length) return; // jeszcze nie załadowane
+      if (!voices.length) return;
 
       voiceSelect.innerHTML = '';
 
-      // Sortuj według preferencji
       const scored = voices.map((v) => {
         let score = 0;
         for (const pref of VOICE_PREFERENCES) {
@@ -145,27 +133,25 @@
         return { voice: v, score };
       }).sort((a, b) => b.score - a.score);
 
-      scored.forEach(({ voice, score }, idx) => {
+      scored.forEach(({ voice, score }) => {
         const opt = document.createElement('option');
         opt.value = voice.name;
         opt.textContent = `${voice.name} (${voice.lang})${score > 0 ? ' ★' : ''}`;
+        opt.title = `${voice.name} (${voice.lang})`; // tooltip na hover
         voiceSelect.appendChild(opt);
       });
 
-      // Wybierz najlepszy polski
       const firstPolish = scored.find((s) => s.score > 0);
       if (firstPolish) {
         voiceSelect.value = firstPolish.voice.name;
       }
     }
 
-    // Głosy mogą się załadować asynchronicznie
     populateVoices();
     if (speechSynthesis.onvoiceschanged !== undefined) {
       speechSynthesis.onvoiceschanged = populateVoices;
     }
 
-    // ====== ODCZYT ======
     function getSelectedVoice() {
       const name = voiceSelect.value;
       return voices.find((v) => v.name === name) || voices[0] || null;
@@ -191,7 +177,7 @@
       };
 
       utterance.onerror = (e) => {
-        if (e.error === 'canceled') return; // normalne przy pause
+        if (e.error === 'canceled') return;
         console.error('TTS error', e);
         statusEl.textContent = 'Błąd odczytu';
         stopTTS();
@@ -213,7 +199,6 @@
         return;
       }
 
-      // Jeśli już był wstrzymany, wznów
       if (synth.paused) {
         synth.resume();
         isPlaying = true;
@@ -221,7 +206,6 @@
         return;
       }
 
-      // Nowy odczyt
       synth.cancel();
       currentIndex = 0;
       isPlaying = true;
@@ -273,24 +257,20 @@
       }
     }
 
-    // ====== EVENTY ======
     toggleBtn.addEventListener('click', toggleTTS);
 
     rateInput.addEventListener('input', () => {
       rateValue.textContent = parseFloat(rateInput.value).toFixed(1) + '×';
     });
 
-    // Stop przy opuszczeniu strony
     window.addEventListener('beforeunload', () => synth.cancel());
 
-    // Automatycznie stop przy zmianie głosu podczas odczytu
     voiceSelect.addEventListener('change', () => {
       if (synth.speaking || synth.paused) {
         stopTTS();
       }
     });
 
-    // Reaguj na klawisz Spacja (tylko gdy nie w input)
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && e.target === document.body) {
         e.preventDefault();
