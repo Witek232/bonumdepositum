@@ -17,13 +17,10 @@ audioUrl: /audio/katechizm-01.mp3   # <— na później, gdy przygotujesz audio
 ---
 
 import Callout from '@/components/Callout.astro';
-import LiteYouTube from '@/components/LiteYouTube.astro';
 
 <Callout type="lang" title="Materiał w języku angielskim" icon="globe">
   Otwórz film na YouTube, włącz napisy i wybierz **Tłumacz automatycznie → Polski**.
 </Callout>
-
-<LiteYouTube id={frontmatter.videoId} title={frontmatter.title} duration={frontmatter.videoDuration} />
 
 W swoim wykładzie *„Filozofia życia”* arcybiskup Fulton Sheen porusza temat egzystencji, sensu życia i ludzkiego podejścia do codziennych doświadczeń. Wprowadzenie jest humorystyczne — Sheen żartuje, że jego wykłady będą długie i nieskryptowane, co kontrastuje z przekonaniem, że to kobiety mówią najwięcej.
 
