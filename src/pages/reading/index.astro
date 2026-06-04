@@ -29,6 +29,7 @@ const t = {
   image="/og-image.jpg"
   heroPage={true}
 >
+  {/* ====== HERO ====== */}
   <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
     <div
       class="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -50,7 +51,7 @@ const t = {
       </svg>
     </div>
 
-    <div class="relative z-10 mx-auto max-w-4xl px-6 text-center">
+    <div class="relative z-10 mx-auto max-w-[50rem] px-6 text-center">
       <p class="mb-4 text-xs font-semibold tracking-[0.3em] text-gold-400 uppercase">
         {t.subtitle}
       </p>
@@ -69,8 +70,9 @@ const t = {
     />
   </section>
 
+  {/* ====== LISTA ====== */}
   <div class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-16 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
-    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-[50rem] px-4 sm:px-6 lg:px-8">
       {filtered.length === 0 ? (
         <p class="text-center text-ink-700/60">{t.empty}</p>
       ) : (
@@ -80,6 +82,7 @@ const t = {
               href={`/reading/${item.id}/`}
               class="group flex flex-col sm:flex-row items-start gap-6 rounded-xl border border-parchment-200 bg-parchment-100 shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
             >
+              {/* Miniaturka */}
               <div class="sm:w-48 md:w-56 flex-shrink-0 bg-parchment-200 aspect-video sm:aspect-[4/3] overflow-hidden relative">
                 {item.data.coverImage ? (
                   <img
@@ -104,6 +107,7 @@ const t = {
                 )}
               </div>
 
+              {/* Treść */}
               <div class="flex-1 p-5 sm:pl-0 sm:pr-5 sm:py-5">
                 <h2 class="text-xl font-bold text-ink-900 group-hover:text-gold-600 transition-colors mb-2">
                   {item.data.title}
