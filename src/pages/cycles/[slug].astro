@@ -47,14 +47,14 @@ const t = {
   image={cycle.data.coverImage ?? '/og-image.jpg'}
   heroPage={true}
 >
-  <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
+  <section class="relative overflow-hidden bg-ink-950 min-h-[50vh] pt-28 pb-16 lg:pt-36 lg:pb-24">
     {cycle.data.coverImage && (
       <div class="absolute inset-0 z-0">
         <img
           src={cycle.data.coverImage}
           alt=""
           aria-hidden="true"
-          class="hero-bg h-full w-full object-cover"
+          class="absolute inset-0 h-full w-full object-cover"
           loading="eager"
           fetchpriority="high"
         />
