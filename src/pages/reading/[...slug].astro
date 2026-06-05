@@ -27,13 +27,14 @@ const t = {
   heroPage={true}
 >
   {/* ====== HERO ====== */}
-  <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
+  <section class="relative overflow-hidden bg-ink-950 min-h-[50vh] pt-28 pb-16 lg:pt-36 lg:pb-24">
     {entry.data.coverImage && (
       <div class="absolute inset-0 z-0">
         <img
           src={entry.data.coverImage}
           alt=""
-          class="h-full w-full object-cover opacity-20"
+          aria-hidden="true"
+          class="absolute inset-0 h-full w-full object-cover opacity-20"
           loading="eager"
         />
         <div class="absolute inset-0 bg-gradient-to-b from-ink-950/80 via-ink-950/85 to-ink-950/95" />
