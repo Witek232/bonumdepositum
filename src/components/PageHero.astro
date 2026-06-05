@@ -1,0 +1,93 @@
+---
+interface Props {
+  bgImage?: string;
+  minHeight?: string;
+  showOrnament?: boolean;
+  showDots?: boolean;
+  class?: string;
+}
+
+const {
+  bgImage,
+  minHeight = 'min-h-[50vh]',
+  showOrnament = true,
+  showDots = false,
+  class: className = '',
+} = Astro.props;
+---
+
+<section
+  class={`hero-section relative flex ${minHeight} items-center justify-center overflow-hidden bg-ink-950 ${className}`}
+>
+  <!-- TŁO: obraz + gradienty -->
+  <div class="absolute inset-0 z-0">
+    {bgImage && (
+      <img
+        src={bgImage}
+        alt=""
+        aria-hidden="true"
+        class="hero-bg h-full w-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+      />
+    )}
+    <!-- Gradient pionowy: bardziej ciemny u góry (za nav), rozjaśnia się, ciemno u dołu -->
+    <div class="absolute inset-0 bg-gradient-to-b from-ink-950/85 via-ink-950/55 to-ink-950/90"></div>
+    <!-- Gradient poziomy: przyciemnia boki -->
+    <div class="absolute inset-0 bg-gradient-to-r from-ink-950/40 via-transparent to-ink-950/40"></div>
+  </div>
+
+  <!-- Siatka kropek (opcjonalnie) -->
+  {showDots && (
+    <div
+      class="absolute inset-0 opacity-[0.03] pointer-events-none z-0"
+      style="background-image: radial-gradient(circle at 1px 1px, #d4a843 0.5px, transparent 0); background-size: 60px 60px;"
+      aria-hidden="true"
+    />
+  )}
+
+  <!-- Ornament górny (opcjonalnie) -->
+  {showOrnament && (
+    <div
+      class="absolute left-1/2 -translate-x-1/2 z-10 opacity-20 pointer-events-none"
+      style="top: calc(80px + 1.5rem);"
+      aria-hidden="true"
+    >
+      <svg width="200" height="40" viewBox="0 0 200 40" fill="none">
+        <path d="M0 20 H80 M120 20 H200" stroke="#d4a843" stroke-width="1" />
+        <circle cx="100" cy="20" r="8" stroke="#d4a843" stroke-width="1" fill="none" />
+        <circle cx="100" cy="20" r="3" fill="#d4a843" />
+        <path d="M85 20 L92 13 M85 20 L92 27 M115 20 L108 13 M115 20 L108 27" stroke="#d4a843" stroke-width="1" />
+      </svg>
+    </div>
+  )}
+
+  <!-- TREŚĆ -->
+  <div class="hero-content relative z-10 mx-auto w-full max-w-[50rem] px-6 text-center">
+    <slot />
+  </div>
+
+  <!-- Dolna linia dekoracyjna -->
+  <div
+    class="absolute right-0 bottom-0 left-0 z-10 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent"
+    aria-hidden="true"
+  />
+</section>
+
+<style>
+  .hero-bg {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-content {
+    padding-top: calc(80px + 2rem);
+    padding-bottom: 2rem;
+  }
+</style>
