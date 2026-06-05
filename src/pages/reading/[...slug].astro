@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -26,81 +27,38 @@ const t = {
   image={entry.data.coverImage ?? '/og-image.jpg'}
   heroPage={true}
 >
-  {/* ====== HERO ====== */}
-  <section class="relative overflow-hidden bg-ink-950 min-h-[50vh] pt-28 pb-16 lg:pt-36 lg:pb-24">
-    {entry.data.coverImage && (
-      <div class="absolute inset-0 z-0">
-        <img
-          src={entry.data.coverImage}
-          alt=""
-          aria-hidden="true"
-          class="absolute inset-0 h-full w-full object-cover opacity-20"
-          loading="eager"
-        />
-        <div class="absolute inset-0 bg-gradient-to-b from-ink-950/80 via-ink-950/85 to-ink-950/95" />
-        <div class="absolute inset-0 bg-gradient-to-r from-ink-950/50 via-transparent to-ink-950/50" />
-      </div>
-    )}
-
-    <div
-      class="absolute inset-0 opacity-[0.02] pointer-events-none z-0"
-      style="background-image: radial-gradient(circle at 1px 1px, #d4a843 0.5px, transparent 0); background-size: 60px 60px;"
-      aria-hidden="true"
-    />
-
-    <div
-      class="absolute left-1/2 -translate-x-1/2 z-10 opacity-20 pointer-events-none"
-      style="top: 2rem;"
-      aria-hidden="true"
+  <PageHero bgImage={entry.data.coverImage ?? undefined} minHeight="min-h-[60vh]">
+    <a
+      href="/reading/"
+      class="inline-flex items-center gap-1.5 text-sm text-parchment-200/50 hover:text-gold-400 transition-colors mb-8"
     >
-      <svg width="200" height="40" viewBox="0 0 200 40" fill="none">
-        <path d="M0 20 H80 M120 20 H200" stroke="#d4a843" stroke-width="1" />
-        <circle cx="100" cy="20" r="8" stroke="#d4a843" stroke-width="1" fill="none" />
-        <circle cx="100" cy="20" r="3" fill="#d4a843" />
-        <path d="M85 20 L92 13 M85 20 L92 27 M115 20 L108 13 M115 20 L108 27" stroke="#d4a843" stroke-width="1" />
-      </svg>
+      {t.back}
+    </a>
+
+    <h1 class="font-display text-4xl md:text-5xl font-bold leading-tight tracking-tight text-parchment-50">
+      {entry.data.title}
+    </h1>
+
+    <div class="mx-auto mt-6 h-px w-32 bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
+
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-parchment-200/60">
+      {entry.data.author && (
+        <span class="flex items-center gap-1.5">
+          <svg class="h-4 w-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          {entry.data.author}
+        </span>
+      )}
+      {entry.data.pubDate && (
+        <span class="flex items-center gap-1.5">
+          <svg class="h-4 w-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+          {entry.data.pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </span>
+      )}
     </div>
+  </PageHero>
 
-    <div class="relative z-10 mx-auto max-w-[50rem] px-6 text-center">
-      <a
-        href="/reading/"
-        class="inline-flex items-center gap-1.5 text-sm text-parchment-200/50 hover:text-gold-400 transition-colors mb-8"
-      >
-        {t.back}
-      </a>
-
-      <h1 class="font-display text-4xl md:text-5xl font-bold leading-tight tracking-tight text-parchment-50">
-        {entry.data.title}
-      </h1>
-
-      <div class="mx-auto mt-6 h-px w-32 bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
-
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-parchment-200/60">
-        {entry.data.author && (
-          <span class="flex items-center gap-1.5">
-            <svg class="h-4 w-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            {entry.data.author}
-          </span>
-        )}
-        {entry.data.pubDate && (
-          <span class="flex items-center gap-1.5">
-            <svg class="h-4 w-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-            {entry.data.pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </span>
-        )}
-      </div>
-    </div>
-
-    <div
-      class="absolute right-0 bottom-0 left-0 z-10 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent"
-      aria-hidden="true"
-    />
-  </section>
-
-  {/* ====== TREŚĆ ====== */}
   <div class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-12 pb-24 lg:pt-16 lg:pb-32 overflow-hidden">
     <div class="mx-auto max-w-[50rem] px-4 sm:px-6 lg:px-8">
-      {/* Link do źródła zewnętrznego */}
       {entry.data.source && (
         <div class="mb-8 p-4 rounded-xl border border-gold-500/20 bg-gold-500/5 flex items-start gap-3">
           <svg class="h-5 w-5 text-gold-600 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
