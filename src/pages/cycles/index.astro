@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { getCollection } from 'astro:content';
 
 const cycles = await getCollection('cycles');
@@ -24,65 +25,19 @@ const t = {
   image="/og-image.jpg"
   heroPage={true}
 >
-  {/* ====== HERO — pełna szerokość, ciemny ====== */}
-  <section class="relative overflow-hidden bg-ink-950 min-h-[50vh] pt-28 pb-16 lg:pt-36 lg:pb-24">
-    {/* Tło obrazkowe — inne niż na stronie głównej */}
-    <div class="absolute inset-0 z-0">
-      <img
-        src="/images/cycles-hero.jpg"
-        alt=""
-        aria-hidden="true"
-        class="absolute inset-0 h-full w-full object-cover"
-        loading="eager"
-        fetchpriority="high"
-      />
-      {/* Gradient pionowy: bardziej ciemny u góry (za nav), rozjaśnia się, ciemno u dołu */}
-      <div class="absolute inset-0 bg-gradient-to-b from-ink-950/85 via-ink-950/55 to-ink-950/90" />
-      {/* Gradient poziomy: przyciemnia boki */}
-      <div class="absolute inset-0 bg-gradient-to-r from-ink-950/40 via-transparent to-ink-950/40" />
-    </div>
+  <PageHero bgImage="/images/cycles-hero.jpg" minHeight="min-h-[60vh]">
+    <p class="mb-4 text-xs font-semibold tracking-[0.3em] text-gold-400 uppercase">
+      {t.subtitle}
+    </p>
+    <h1 class="font-display text-4xl font-bold leading-tight tracking-tight text-parchment-50 lg:text-5xl">
+      {t.title}
+    </h1>
+    <div class="mx-auto mt-6 h-px w-32 bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
+    <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-parchment-200/70">
+      {t.description}
+    </p>
+  </PageHero>
 
-    <div
-      class="absolute inset-0 opacity-[0.03] pointer-events-none z-0"
-      style="background-image: radial-gradient(circle at 1px 1px, #d4a843 0.5px, transparent 0); background-size: 60px 60px;"
-      aria-hidden="true"
-    >
-    </div>
-
-    {/* Ornament górny */}
-    <div
-      class="absolute left-1/2 -translate-x-1/2 z-10 opacity-20 pointer-events-none"
-      style="top: 2rem;"
-      aria-hidden="true"
-    >
-      <svg width="200" height="40" viewBox="0 0 200 40" fill="none">
-        <path d="M0 20 H80 M120 20 H200" stroke="#d4a843" stroke-width="1" />
-        <circle cx="100" cy="20" r="8" stroke="#d4a843" stroke-width="1" fill="none" />
-        <circle cx="100" cy="20" r="3" fill="#d4a843" />
-        <path d="M85 20 L92 13 M85 20 L92 27 M115 20 L108 13 M115 20 L108 27" stroke="#d4a843" stroke-width="1" />
-      </svg>
-    </div>
-
-    <div class="relative z-10 mx-auto max-w-[50rem] px-6 text-center">
-      <p class="mb-4 text-xs font-semibold tracking-[0.3em] text-gold-400 uppercase">
-        {t.subtitle}
-      </p>
-      <h1 class="font-display text-4xl font-bold leading-tight tracking-tight text-parchment-50 lg:text-5xl">
-        {t.title}
-      </h1>
-      <div class="mx-auto mt-6 h-px w-32 bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
-      <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-parchment-200/70">
-        {t.description}
-      </p>
-    </div>
-
-    <div
-      class="absolute right-0 bottom-0 left-0 z-10 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent"
-      aria-hidden="true"
-    />
-  </section>
-
-  {/* ====== LISTA CYKLI — jasna, pionowa ====== */}
   <div class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-16 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
     <div class="mx-auto max-w-[50rem] px-4 sm:px-6 lg:px-8">
       {filtered.length === 0 ? (
@@ -94,7 +49,6 @@ const t = {
               href={`/cycles/${cycle.id}/`}
               class="group flex flex-col sm:flex-row items-start gap-6 rounded-xl border border-parchment-200 bg-parchment-100 shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
             >
-              {/* Miniaturka */}
               <div class="sm:w-48 md:w-56 flex-shrink-0 bg-parchment-200 aspect-video sm:aspect-[4/3] overflow-hidden relative">
                 {cycle.data.coverImage ? (
                   <img
@@ -119,7 +73,6 @@ const t = {
                 )}
               </div>
 
-              {/* Treść */}
               <div class="flex-1 p-5 sm:pl-0 sm:pr-5 sm:py-5">
                 <h2 class="text-xl font-bold text-ink-900 group-hover:text-gold-600 transition-colors mb-2">
                   {cycle.data.title}
