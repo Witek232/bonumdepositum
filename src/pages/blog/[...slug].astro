@@ -70,7 +70,7 @@ const navT = {
   heroPage={true}
 >
   {/* HERO ARTYKUŁU — pełna szerokość, ciemne tło */}
-  <section class="relative overflow-hidden bg-ink-950 pt-28 pb-16 lg:pt-36 lg:pb-24">
+  <section class="relative overflow-hidden bg-ink-950 min-h-[50vh] pt-28 pb-16 lg:pt-36 lg:pb-24">
     {/* Tło obrazkowe z lekcji (jeśli jest) */}
     {entry.data.image && (
       <div class="absolute inset-0 z-0">
@@ -78,7 +78,7 @@ const navT = {
           src={entry.data.image}
           alt=""
           aria-hidden="true"
-          class="hero-bg h-full w-full object-cover"
+          class="absolute inset-0 h-full w-full object-cover"
           loading="eager"
           fetchpriority="high"
         />
