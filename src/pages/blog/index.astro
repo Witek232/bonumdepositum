@@ -4,30 +4,16 @@ import PageHero from '../../components/PageHero.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
-
-// Separate posts that are in cycles vs standalone blog posts
-const cyclePosts = allPosts.filter(p => p.data.cycle);
-const standalonePosts = allPosts.filter(p => !p.data.cycle);
-
-// Get unique cycles that have posts
-const cycleIds = [...new Set(cyclePosts.map(p => {
-  const c = p.data.cycle;
-  return typeof c === 'string' ? c : (c as any)?.id;
-}).filter(Boolean))];
-
-// Get cycle entries for titles
-const cycles = await getCollection('cycles');
-const cycleMap = new Map(cycles.map(c => [c.id, c.data.title]));
+// Only standalone posts (no cycle)
+const posts = allPosts
+  .filter(p => !p.data.cycle)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
 const t = {
   title: 'Blog',
-  subtitle: 'Artykuły, analizy i lekcje',
-  description: 'Wszystkie publikacje — od artykułów blogowych po systematyczne cykle tematyczne.',
-  allTab: 'Wszystkie',
-  blogTab: 'Artykuły',
-  cyclesTab: 'Cykle',
+  subtitle: 'Artykuły i eseje',
+  description: 'Teksty niezależne — poza cyklami tematycznymi. Filozofia, duchowość, kultura i społeczeństwo.',
   read: 'Czytaj',
-  cycleLabel: 'Cykl',
   date: 'Data',
   author: 'Autor',
   empty: 'Brak dostępnych artykułów.',
@@ -56,86 +42,11 @@ const t = {
 
   <div class="main-content min-h-screen shadow-2xl rounded-t-2xl -mt-4 pt-16 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
     <div class="mx-auto max-w-[50rem] px-4 sm:px-6 lg:px-8">
-      
-      <!-- Tabs -->
-      <div class="flex gap-1 mb-10 p-1 rounded-xl bg-parchment-200/50 w-fit" x-data="{ tab: 'all' }">
-        <button 
-          @click="tab = 'all'" 
-          :class="tab === 'all' ? 'bg-white shadow-sm text-ink-900' : 'text-ink-700/60 hover:text-ink-800'"
-          class="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-        >
-          {t.allTab}
-        </button>
-        <button 
-          @click="tab = 'blog'" 
-          :class="tab === 'blog' ? 'bg-white shadow-sm text-ink-900' : 'text-ink-700/60 hover:text-ink-800'"
-          class="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-        >
-          {t.blogTab}
-        </button>
-        <button 
-          @click="tab = 'cycles'" 
-          :class="tab === 'cycles' ? 'bg-white shadow-sm text-ink-900' : 'text-ink-700/60 hover:text-ink-800'"
-          class="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-        >
-          {t.cyclesTab}
-        </button>
-      </div>
-
-      <!-- All posts -->
-      <div x-show="tab === 'all'" x-cloak>
+      {posts.length === 0 ? (
+        <p class="text-center text-ink-700/60 py-12">{t.empty}</p>
+      ) : (
         <div class="flex flex-col gap-4">
-          {allPosts.sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()).map(post => {
-            const cycleId = post.data.cycle ? (typeof post.data.cycle === 'string' ? post.data.cycle : (post.data.cycle as any).id) : null;
-            const cycleTitle = cycleId ? cycleMap.get(cycleId) : null;
-            const lessonNum = (post.data as any).lessonNumber;
-            return (
-              <a
-                href={`/blog/${post.id}/`}
-                class="group flex items-start gap-5 rounded-xl border border-parchment-200 bg-parchment-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 p-5"
-              >
-                <div class="flex-1 min-w-0">
-                  <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                    <h3 class="text-lg font-bold text-ink-900 group-hover:text-gold-600 transition-colors leading-snug">
-                      {post.data.title}
-                    </h3>
-                    {cycleTitle && (
-                      <span class="inline-flex items-center gap-1 rounded-full bg-ink-950/5 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-ink-700/60 border border-ink-950/10">
-                        {t.cycleLabel}: {cycleTitle}
-                        {typeof lessonNum === 'number' && `· #${String(lessonNum).padStart(2, '0')}`}
-                      </span>
-                    )}
-                  </div>
-                  <p class="text-sm text-ink-700/70 leading-relaxed line-clamp-2 mb-2.5">
-                    {post.data.description}
-                  </p>
-                  <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-700/50">
-                    {post.data.author && (
-                      <span class="flex items-center gap-1">
-                        <svg class="h-3.5 w-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-                        {post.data.author}
-                      </span>
-                    )}
-                    <span class="flex items-center gap-1">
-                      <svg class="h-3.5 w-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
-                      {post.data.pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
-                    </span>
-                    <span class="ml-auto flex items-center gap-1 font-medium text-gold-600 group-hover:text-gold-500 transition-colors">
-                      {t.read}
-                      <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                    </span>
-                  </div>
-                </div>
-              </a>
-            );
-          })}
-        </div>
-      </div>
-
-      <!-- Standalone blog posts -->
-      <div x-show="tab === 'blog'" x-cloak>
-        <div class="flex flex-col gap-4">
-          {standalonePosts.sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()).map(post => (
+          {posts.map(post => (
             <a
               href={`/blog/${post.id}/`}
               class="group flex items-start gap-5 rounded-xl border border-parchment-200 bg-parchment-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 p-5"
@@ -166,81 +77,13 @@ const t = {
               </div>
             </a>
           ))}
-          {standalonePosts.length === 0 && (
-            <p class="text-center text-ink-700/60 py-12">{t.empty}</p>
-          )}
         </div>
-      </div>
-
-      <!-- Cycles view -->
-      <div x-show="tab === 'cycles'" x-cloak>
-        <div class="flex flex-col gap-8">
-          {cycleIds.map(cycleId => {
-            const cycleTitle = cycleMap.get(cycleId) || cycleId;
-            const posts = cyclePosts.filter(p => {
-              const c = p.data.cycle;
-              return (typeof c === 'string' ? c : (c as any)?.id) === cycleId;
-            }).sort((a,b) => {
-              const na = (a.data as any).lessonNumber ?? 0;
-              const nb = (b.data as any).lessonNumber ?? 0;
-              return na - nb;
-            });
-            return (
-              <div class="rounded-xl border border-parchment-200 bg-parchment-100 overflow-hidden">
-                <div class="px-5 py-4 bg-parchment-200/50 border-b border-parchment-200 flex items-center justify-between">
-                  <h2 class="text-lg font-bold text-ink-900">{cycleTitle}</h2>
-                  <a href={`/cycles/${cycleId}/`} class="text-xs font-semibold uppercase tracking-wider text-gold-600 hover:text-gold-500 transition-colors flex items-center gap-1">
-                    Zobacz cykl
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                  </a>
-                </div>
-                <div class="flex flex-col">
-                  {posts.map((post, idx) => {
-                    const lessonNum = (post.data as any).lessonNumber;
-                    return (
-                      <a
-                        href={`/blog/${post.id}/`}
-                        class={`group flex items-start gap-4 px-5 py-3.5 transition-all hover:bg-parchment-200/40 ${idx !== posts.length - 1 ? 'border-b border-parchment-200/50' : ''}`}
-                      >
-                        {typeof lessonNum === 'number' && (
-                          <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-ink-950 flex items-center justify-center text-xs font-bold text-gold-400">
-                            {String(lessonNum).padStart(2, '0')}
-                          </div>
-                        )}
-                        <div class="flex-1 min-w-0">
-                          <h4 class="text-sm font-bold text-ink-900 group-hover:text-gold-600 transition-colors">
-                            {post.data.title}
-                          </h4>
-                          <p class="text-xs text-ink-700/60 mt-0.5 line-clamp-1">
-                            {post.data.description}
-                          </p>
-                        </div>
-                        <svg class="h-4 w-4 text-gold-600 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-          {cycleIds.length === 0 && (
-            <p class="text-center text-ink-700/60 py-12">{t.empty}</p>
-          )}
-        </div>
-      </div>
-
+      )}
     </div>
   </div>
 </Layout>
 
 <style>
-  [x-cloak] { display: none !important; }
-  .line-clamp-1 {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
