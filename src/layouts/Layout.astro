@@ -17,7 +17,7 @@ export interface Props {
    * heroPage: false (domyślnie) → podstrona
    *   - <main> z pt-20 (kompensacja fixed nav h-20=80px)
    *   - <main> z klasą main-content (jasne tło parchment)
-   *   - wewnętrzny <div> max-w-4xl ogranicza szerokość tekstu
+   *   - wewnętrzny <div> max-w-[50rem] ogranicza szerokość tekstu
    */
   heroPage?: boolean;
 }
@@ -41,7 +41,6 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="generator" content={Astro.generator} />
-
   <link rel="canonical" href={canonicalURL} />
   <title>{title} | {siteName}</title>
   <meta name="description" content={description} />
@@ -63,9 +62,10 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <meta property="twitter:image" content={new URL(image, Astro.site)} />
 
   <!-- Alpine.js -->
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-  <!-- Zapobiegaj FOUC -->
+  <!-- Zapobiegaj FOUC + x-cloak -->
+  <style>[x-cloak] { display: none !important; }</style>
   <script is:inline>
     (function () {
       const dark = localStorage.getItem('darkMode') === 'true';
@@ -103,10 +103,10 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
        * - pt-20 = 80px = wysokość fixed nav (h-20) → treść nie jest przykryta
        * - main-content → klasa z global.css nadaje jasne tło parchment-50
        * - pb-12 → oddech na dole
-       * - max-w-4xl wewnątrz → optymalana szerokość kolumny dla czytelności
+       * - max-w-[50rem] wewnątrz → optymalna szerokość kolumny dla czytelności
        */
       <main class="main-content min-h-screen pt-20 pb-12 overflow-x-hidden">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-[50rem] px-4 sm:px-6 lg:px-8">
           <slot />
         </div>
       </main>
