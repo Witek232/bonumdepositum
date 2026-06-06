@@ -46,7 +46,7 @@ const langItems = [
       <div class="relative h-10 w-10 rounded-lg bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center shadow-lg shadow-gold-500/20 group-hover:shadow-gold-500/30 transition-shadow">
         <span class="font-display text-lg font-bold text-ink-950">B</span>
       </div>
-      <span class="font-display text-xl font-bold text-parchment-50 hidden sm:block">
+      <span class="font-display text-xl lg:text-2xl font-bold text-parchment-50 hidden sm:block">
         Bonum Depositum
       </span>
     </a>
@@ -60,7 +60,7 @@ const langItems = [
           <div class={`relative nav-item ${hasChildren ? 'has-dropdown' : ''}`} data-label={item.label}>
             <a
               href={item.href}
-              class={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5 no-underline
+              class={`relative px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 flex items-center gap-1.5 no-underline
                 ${isActive 
                   ? 'text-gold-400 bg-gold-500/10' 
                   : 'text-parchment-200/70 hover:text-parchment-100 hover:bg-parchment-200/5'
@@ -84,13 +84,10 @@ const langItems = [
 
             {hasChildren && (
               <div class="dropdown-panel absolute top-full left-0 mt-2 w-64 rounded-xl border border-parchment-200/10 bg-ink-950/95 backdrop-blur-md shadow-2xl shadow-black/40 py-2 overflow-hidden opacity-0 invisible translate-y-1 transition-all duration-200 pointer-events-none">
-                <div class="px-3 py-2 border-b border-parchment-200/10 mb-1">
-                  <span class="text-xs font-semibold uppercase tracking-wider text-gold-500/70">{item.label}</span>
-                </div>
                 {item.children.map((child) => (
                   <a
                     href={child.href}
-                    class="block px-4 py-2.5 text-sm transition-colors no-underline text-parchment-200/70 hover:text-parchment-100 hover:bg-parchment-200/5"
+                    class="block px-4 py-2.5 text-base transition-colors no-underline text-parchment-200/70 hover:text-parchment-100 hover:bg-parchment-200/5"
                   >
                     {child.label}
                   </a>
@@ -109,7 +106,7 @@ const langItems = [
         {langItems.map(l => (
           <a
             href={l.href}
-            class={`px-2 py-1 rounded text-xs font-semibold transition-colors no-underline ${
+            class={`px-2 py-1 rounded text-sm font-semibold transition-colors no-underline ${
               l.code === lang
                 ? 'bg-gold-500/20 text-gold-400'
                 : 'text-parchment-200/50 hover:text-parchment-200 hover:bg-parchment-200/5'
@@ -145,7 +142,7 @@ const langItems = [
           <div>
             <a
               href={item.href}
-              class={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors no-underline ${
+              class={`block px-4 py-3 rounded-lg text-base font-medium transition-colors no-underline ${
                 isActive
                   ? 'text-gold-400 bg-gold-500/10'
                   : 'text-parchment-200/70 hover:text-parchment-100 hover:bg-parchment-200/5'
@@ -158,7 +155,7 @@ const langItems = [
                 {item.children.map(child => (
                   <a
                     href={child.href}
-                    class="block px-3 py-2 rounded-lg text-sm text-parchment-200/60 hover:text-parchment-100 hover:bg-parchment-200/5 transition-colors no-underline"
+                    class="block px-3 py-2 rounded-lg text-base text-parchment-200/60 hover:text-parchment-100 hover:bg-parchment-200/5 transition-colors no-underline"
                   >
                     {child.label}
                   </a>
@@ -170,12 +167,12 @@ const langItems = [
       })}
       <!-- Mobile language switcher -->
       <div class="mt-4 pt-4 border-t border-parchment-200/10 flex items-center gap-2">
-        <span class="text-xs font-semibold uppercase tracking-wider text-parchment-200/40">Język</span>
+        <span class="text-sm font-semibold uppercase tracking-wider text-parchment-200/40">Język</span>
         <div class="flex items-center gap-1">
           {langItems.map(l => (
             <a
               href={l.href}
-              class={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors no-underline ${
+              class={`px-3 py-1.5 rounded-lg text-base font-medium transition-colors no-underline ${
                 l.code === lang
                   ? 'bg-gold-500/20 text-gold-400'
                   : 'text-parchment-200/50 hover:text-parchment-200 hover:bg-parchment-200/5'
