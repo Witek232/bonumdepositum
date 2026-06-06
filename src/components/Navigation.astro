@@ -15,12 +15,11 @@ const sortedCycles = cycles
 
 const navItems = [
   { label: 'Strona główna', href: '/' },
+  { label: 'Blog', href: '/blog/' },
   {
-    label: 'Blog',
-    href: '/blog/',
+    label: 'Cykle',
+    href: '/cycles/',
     children: [
-      { label: 'Wszystkie artykuły', href: '/blog/' },
-      { label: 'Cykle', href: '/cycles/' },
       ...sortedCycles.map(c => ({
         label: c.data.title,
         href: `/cycles/${c.id}/`,
@@ -43,7 +42,7 @@ const langItems = [
 >
   <div class="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8">
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-3 group">
+    <a href="/" class="flex items-center gap-3 group no-underline">
       <div class="relative h-10 w-10 rounded-lg bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center shadow-lg shadow-gold-500/20 group-hover:shadow-gold-500/30 transition-shadow">
         <span class="font-display text-lg font-bold text-ink-950">B</span>
       </div>
@@ -88,16 +87,11 @@ const langItems = [
                 <div class="px-3 py-2 border-b border-parchment-200/10 mb-1">
                   <span class="text-xs font-semibold uppercase tracking-wider text-gold-500/70">{item.label}</span>
                 </div>
-                {item.children.map((child, idx) => (
+                {item.children.map((child) => (
                   <a
                     href={child.href}
-                    class={`block px-4 py-2.5 text-sm transition-colors no-underline ${
-                      idx === 0 
-                        ? 'text-gold-400 font-medium hover:bg-gold-500/10' 
-                        : 'text-parchment-200/70 hover:text-parchment-100 hover:bg-parchment-200/5'
-                    }`}
+                    class="block px-4 py-2.5 text-sm transition-colors no-underline text-parchment-200/70 hover:text-parchment-100 hover:bg-parchment-200/5"
                   >
-                    {idx === 2 && <div class="h-px bg-parchment-200/10 my-1 -mx-4" />}
                     {child.label}
                   </a>
                 ))}
