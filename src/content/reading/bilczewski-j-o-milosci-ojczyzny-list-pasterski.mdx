@@ -7,19 +7,18 @@ tags: ["flipchart", "archiwum", "historia", "cyfryzacja"]
 ---
 
 import ArchiveEmbed from '@/components/ArchiveEmbed.astro';
+import Callout from '@/components/Callout.astro';
 
-<div class="bg-gray-50 dark:bg-gray-800 border-l-4 border-accent dark:border-dark-accent p-4 rounded-r-lg mb-8 shadow-sm">
-  <p class="text-ink dark:text-dark-ink font-serif">
-    💡 <strong>Wskazówka:</strong> Aby przejść do wygodnej lektury tekstu, należy otworzyć menu oznaczone trzema kropkami (prawy dolny róg) i wybrać opcję <strong>Fullscreen</strong>.
-  </p>
-</div>
+<Callout type="info" title="💡 Wskazówka">
+  Aby przejść do wygodnej lektury tekstu, należy otworzyć menu oznaczone trzema kropkami (prawy dolny róg) i wybrać opcję **Fullscreen**.
+</Callout>
+
 
 ### Skany z archiwów
 
 Kolejny zasób pochodzi z digitalizacji bibliotecznych. Format tych skanów jest zazwyczaj pionowy (kształt książki), dlatego nasz komponent automatycznie dostosuje dla niego optymalne proporcje.
 
-<ArchiveEmbed 
-  url="https://archive.org/embed/kpbc.umk.pl.Magazyn_295_07_HD_009_205199" 
-  title="Magazyn 295 - Archiwum" 
-  source="archive" 
+<ArchiveEmbed
+  src="https://archive.org/embed/kpbc.umk.pl.Magazyn_295_07_HD_009_205199"
+  title="Bilczewski J - O miłości ojczyzny - list pasterski"
 />
