@@ -1,0 +1,97 @@
+---
+// IIIFViewer – czytnik książek/dokumentów oparty o IIIF + Tify
+// Obsługuje manifesty IIIF Presentation API 2.x i 3.0 (m.in. Polona.pl)
+//
+// Użycie w MDX:
+//   import IIIFViewer from '@/components/IIIFViewer.astro'
+//   <IIIFViewer manifestUrl="https://polona.pl/api/.../manifest.json" title="Nazwa dokumentu" />
+
+interface Props {
+  manifestUrl: string;
+  title?: string;
+}
+
+const { manifestUrl, title = 'Dokument cyfrowy' } = Astro.props;
+const viewerId = `tify-${Math.round(Date.now() / 37).toString(36)}`;
+
+// Zgadnij źródło (Polona vs inne)
+const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Manifest';
+---
+
+<div
+  class="iiif-viewer not-prose my-8 border border-parchment-400/40 rounded-lg overflow-hidden bg-ink-950 shadow-lg"
+  x-data="{ fullscreen: false }"
+>
+  <!-- Styl Tify z CDN -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.css"
+  />
+
+  <!-- Kontener przeglądarki -->
+  <div
+    id={viewerId}
+    data-manifest-url={manifestUrl}
+    class="tify-container"
+    style="min-height: 75vh"
+  ></div>
+
+  <!-- Pasek informacyjny -->
+  <div
+    class="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 bg-parchment-100/10 border-t border-parchment-400/30 text-sm"
+  >
+    <span class="text-parchment-200/60">
+      Źródło:&#32;
+      <a
+        href={manifestUrl}
+        target="_blank"
+        rel="noopener"
+        class="text-gold-400 hover:text-gold-300 underline underline-offset-2 transition-colors"
+      >
+        {sourceLabel}
+      </a>
+    </span>
+
+    <button
+      type="button"
+      @click="{
+        const el = $el.closest('.iiif-viewer').querySelector('.tify-container');
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          el.requestFullscreen();
+        }
+      }"
+      class="px-3 py-1 text-xs border border-gold-500/40 text-gold-300 hover:bg-gold-500/10 rounded transition-colors cursor-pointer select-none"
+    >
+      ⛶ Pełny ekran
+    </button>
+  </div>
+</div>
+
+<!-- Boot skrypt – ładuje Tify jako ES module i inicjalizuje czytnik -->
+<script is:inline>
+  (function bootIIIF() {
+    var containers = document.querySelectorAll('.tify-container[data-manifest-url]');
+    for (var i = 0; i < containers.length; i++) {
+      var c = containers[i];
+      var id = c.id;
+      var url = c.getAttribute('data-manifest-url');
+      if (!id || !url) continue;
+
+      // Zapobiegaj podwójnej inicjalizacji
+      if (c.querySelector('.tify')) continue;
+
+      var s = document.createElement('script');
+      s.type = 'module';
+      s.textContent =
+        "import Tify from 'https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.esm.js';" +
+        "new Tify({" +
+        "  container: '#" + id + "'," +
+        "  manifestUrl: " + JSON.stringify(url) + "," +
+        "  language: 'pl'," +
+        "});";
+      document.head.appendChild(s);
+    }
+  })();
+</script>
