@@ -12,29 +12,35 @@ interface Props {
 }
 
 const { manifestUrl, title = 'Dokument cyfrowy' } = Astro.props;
-const viewerId = `tify-${Math.round(Date.now() / 37).toString(36)}`;
-
-// Zgadnij źródło (Polona vs inne)
+const viewerId = `tify-${Math.random().toString(36).slice(2, 9)}`;
 const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Manifest';
 ---
 
+<!-- CSS Tify – ⚠️ KLUCZOWE: osobny <link> poza komponentem, żeby Astro na pewno hoistnęło do <head> -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.css"
+/>
+
 <div
   class="iiif-viewer not-prose my-8 border border-parchment-400/40 rounded-lg overflow-hidden bg-ink-950 shadow-lg"
-  x-data="{ fullscreen: false }"
 >
-  <!-- Styl Tify z CDN -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.css"
-  />
-
-  <!-- Kontener przeglądarki -->
+  <!-- Kontener przeglądarki + placeholder ładowania -->
   <div
     id={viewerId}
     data-manifest-url={manifestUrl}
-    class="tify-container"
+    class="tify-container relative"
     style="min-height: 75vh"
-  ></div>
+  >
+    <!-- Placeholder widoczny przed inicjalizacją Tify -->
+    <div class="tify-placeholder absolute inset-0 flex flex-col items-center justify-center gap-3 text-parchment-200/60 z-0">
+      <svg class="animate-spin h-8 w-8 text-gold-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>Ładowanie dokumentu…</span>
+    </div>
+  </div>
 
   <!-- Pasek informacyjny -->
   <div
@@ -54,14 +60,7 @@ const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Mani
 
     <button
       type="button"
-      @click="{
-        const el = $el.closest('.iiif-viewer').querySelector('.tify-container');
-        if (document.fullscreenElement) {
-          document.exitFullscreen();
-        } else {
-          el.requestFullscreen();
-        }
-      }"
+      id={`fs-${viewerId}`}
       class="px-3 py-1 text-xs border border-gold-500/40 text-gold-300 hover:bg-gold-500/10 rounded transition-colors cursor-pointer select-none"
     >
       ⛶ Pełny ekran
@@ -69,29 +68,63 @@ const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Mani
   </div>
 </div>
 
-<!-- Boot skrypt – ładuje Tify jako ES module i inicjalizuje czytnik -->
 <script is:inline>
-  (function bootIIIF() {
-    var containers = document.querySelectorAll('.tify-container[data-manifest-url]');
-    for (var i = 0; i < containers.length; i++) {
-      var c = containers[i];
-      var id = c.id;
+  (function boot() {
+    // Helper: init Tify
+    function initOne(c) {
+      if (c.querySelector('.tify')) return; // już zainicjalizowany
+
       var url = c.getAttribute('data-manifest-url');
-      if (!id || !url) continue;
+      var id  = c.id;
 
-      // Zapobiegaj podwójnej inicjalizacji
-      if (c.querySelector('.tify')) continue;
+      import('https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.esm.js')
+        .then(function (mod) {
+          var Tify = mod.default || mod;
+          new Tify({
+            container: '#' + id,
+            manifestUrl: url,
+            language: 'pl',
+          });
+        })
+        .catch(function (err) {
+          console.error('IIIFViewer: nie udało się załadować Tify', err);
+          c.innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#d4a843;font-family:serif;text-align:center;padding:2rem">' +
+            '<div>⚠️ Nie udało się załadować czytnika.<br>' +
+            '<a href="' + url + '" target="_blank" style="color:#c49a38;text-decoration:underline">Otwórz manifest źródłowy</a></div>' +
+            '</div>';
+        });
+    }
 
-      var s = document.createElement('script');
-      s.type = 'module';
-      s.textContent =
-        "import Tify from 'https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.esm.js';" +
-        "new Tify({" +
-        "  container: '#" + id + "'," +
-        "  manifestUrl: " + JSON.stringify(url) + "," +
-        "  language: 'pl'," +
-        "});";
-      document.head.appendChild(s);
+    // Fullscreen button handler
+    function bindFS() {
+      document.querySelectorAll('.iiif-viewer button[id^="fs-"]').forEach(function (btn) {
+        if (btn._boundFS) return;
+        btn._boundFS = true;
+        btn.addEventListener('click', function () {
+          var viewer = btn.closest('.iiif-viewer');
+          if (!viewer) return;
+          var container = viewer.querySelector('.tify-container');
+          if (!container) return;
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else {
+            container.requestFullscreen();
+          }
+        });
+      });
+    }
+
+    // Init on ready
+    function initAll() {
+      document.querySelectorAll('.tify-container[data-manifest-url]').forEach(initOne);
+      bindFS();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
     }
   })();
 </script>
