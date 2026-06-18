@@ -1,10 +1,6 @@
 ---
 // IIIFViewer – czytnik książek/dokumentów oparty o IIIF + Tify
-// Obsługuje manifesty IIIF Presentation API 2.x i 3.0 (m.in. Polona.pl)
-//
-// Użycie w MDX:
-//   import IIIFViewer from '@/components/IIIFViewer.astro'
-//   <IIIFViewer manifestUrl="https://polona.pl/api/.../manifest.json" title="Nazwa dokumentu" />
+// Obsługuje manifesty IIIF Presentation API 2.x i 3.0, m.in. Polona.pl
 
 interface Props {
   manifestUrl: string;
@@ -12,11 +8,12 @@ interface Props {
 }
 
 const { manifestUrl, title = 'Dokument cyfrowy' } = Astro.props;
+
 const viewerId = `tify-${Math.random().toString(36).slice(2, 9)}`;
+const fsButtonId = `fs-${viewerId}`;
 const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Manifest';
 ---
 
-<!-- CSS Tify – ⚠️ KLUCZOWE: osobny <link> poza komponentem, żeby Astro na pewno hoistnęło do <head> -->
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.css"
@@ -25,14 +22,13 @@ const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Mani
 <div
   class="iiif-viewer not-prose my-8 border border-parchment-400/40 rounded-lg overflow-hidden bg-ink-950 shadow-lg"
 >
-  <!-- Kontener przeglądarki + placeholder ładowania -->
   <div
     id={viewerId}
     data-manifest-url={manifestUrl}
     class="tify-container relative"
-    style="min-height: 75vh"
+    style="height: 75vh; min-height: 480px;"
+    aria-label={title}
   >
-    <!-- Placeholder widoczny przed inicjalizacją Tify -->
     <div class="tify-placeholder absolute inset-0 flex flex-col items-center justify-center gap-3 text-parchment-200/60 z-0">
       <svg class="animate-spin h-8 w-8 text-gold-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -42,7 +38,6 @@ const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Mani
     </div>
   </div>
 
-  <!-- Pasek informacyjny -->
   <div
     class="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 bg-parchment-100/10 border-t border-parchment-400/30 text-sm"
   >
@@ -60,7 +55,7 @@ const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Mani
 
     <button
       type="button"
-      id={`fs-${viewerId}`}
+      id={fsButtonId}
       class="px-3 py-1 text-xs border border-gold-500/40 text-gold-300 hover:bg-gold-500/10 rounded transition-colors cursor-pointer select-none"
     >
       ⛶ Pełny ekran
@@ -69,53 +64,81 @@ const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Mani
 </div>
 
 <script is:inline>
-  (function boot() {
-    // Helper: init Tify
-    function initOne(c) {
-      if (c.querySelector('.tify')) return; // już zainicjalizowany
+  (function () {
+    var TIFY_JS_URL = 'https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.js';
 
-      var url = c.getAttribute('data-manifest-url');
-      var id  = c.id;
+    function showError(container, url, message) {
+      console.error('IIIFViewer:', message);
 
-      import('https://cdn.jsdelivr.net/npm/tify@0.35.0/dist/tify.esm.js')
+      container.innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:center;height:100%;min-height:260px;color:#d4a843;font-family:serif;text-align:center;padding:2rem;background:#111">' +
+          '<div>' +
+            '⚠️ Nie udało się załadować czytnika.<br>' +
+            '<small style="display:block;margin-top:.5rem;color:#aaa">' + String(message) + '</small>' +
+            '<a href="' + encodeURI(url) + '" target="_blank" rel="noopener" style="display:inline-block;margin-top:1rem;color:#c49a38;text-decoration:underline">' +
+              'Otwórz manifest źródłowy' +
+            '</a>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function initOne(container) {
+      if (!container || container.dataset.tifyInitialized === '1') return;
+
+      var url = container.getAttribute('data-manifest-url');
+      var id = container.id;
+
+      if (!url || !id) return;
+
+      container.dataset.tifyInitialized = '1';
+
+      import(TIFY_JS_URL)
         .then(function (mod) {
           var Tify = mod.default || mod;
-          new Tify({
-            container: '#' + id,
+
+          var viewer = new Tify({
+            container: '#' + CSS.escape(id),
             manifestUrl: url,
             language: 'pl',
+
+            // opcjonalnie: jeśli chcesz startować od pierwszej numerowanej strony,
+            // w tym manifeście Polony jest to strona 5:
+            // pages: [5],
           });
+
+          if (viewer.ready && typeof viewer.ready.catch === 'function') {
+            viewer.ready.catch(function (err) {
+              showError(container, url, err && err.message ? err.message : err);
+            });
+          }
         })
         .catch(function (err) {
-          console.error('IIIFViewer: nie udało się załadować Tify', err);
-          c.innerHTML =
-            '<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#d4a843;font-family:serif;text-align:center;padding:2rem">' +
-            '<div>⚠️ Nie udało się załadować czytnika.<br>' +
-            '<a href="' + url + '" target="_blank" style="color:#c49a38;text-decoration:underline">Otwórz manifest źródłowy</a></div>' +
-            '</div>';
+          showError(container, url, err && err.message ? err.message : err);
         });
     }
 
-    // Fullscreen button handler
     function bindFS() {
       document.querySelectorAll('.iiif-viewer button[id^="fs-"]').forEach(function (btn) {
-        if (btn._boundFS) return;
-        btn._boundFS = true;
+        if (btn.dataset.boundFs === '1') return;
+
+        btn.dataset.boundFs = '1';
+
         btn.addEventListener('click', function () {
           var viewer = btn.closest('.iiif-viewer');
           if (!viewer) return;
+
           var container = viewer.querySelector('.tify-container');
           if (!container) return;
+
           if (document.fullscreenElement) {
             document.exitFullscreen();
-          } else {
+          } else if (container.requestFullscreen) {
             container.requestFullscreen();
           }
         });
       });
     }
 
-    // Init on ready
     function initAll() {
       document.querySelectorAll('.tify-container[data-manifest-url]').forEach(initOne);
       bindFS();
@@ -126,5 +149,8 @@ const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Mani
     } else {
       initAll();
     }
+
+    // Przydatne, jeśli używasz Astro View Transitions / routera Astro.
+    document.addEventListener('astro:page-load', initAll);
   })();
 </script>
