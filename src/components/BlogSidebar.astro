@@ -285,4 +285,25 @@ allPosts.forEach(post => {
       border-bottom: 1px solid #eee;
     }
   }
+
+.blog-page {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .blog-content {
+    max-width: 780px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 1024px) {
+    .blog-page {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
 </style>
