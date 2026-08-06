@@ -6,13 +6,12 @@ lang: pl
 tags: ['blog', 'artykuł', 'Chrystus', 'św. Justyn', 'apologetyka', 'dialog']
 ---
 
-import BlogSidebar from '@/components/BlogSidebar.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
 
-<div class="blog-page">
+<div class="blog-layout">
 
-<BlogSidebar />
-
-<article class="blog-content">
+  <!-- WĄSKI SIDEBAR Z SPISem TREŚCI -->
+  <TableOfContents />
 
 ### Czego starożytny apologeta może nauczyć nas o sztuce perswazji
 
@@ -181,3 +180,25 @@ Pytanie tylko, czy chcemy.
 </article>
 
 </div>
+
+<style>
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .blog-content {
+    max-width: 780px;
+    line-height: 1.75;
+  }
+
+  @media (max-width: 1024px) {
+    .blog-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
