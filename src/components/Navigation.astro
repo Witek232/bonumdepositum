@@ -90,22 +90,10 @@ const langItems = [
       })}
     </div>
 
-    <!-- WYSZUKIWARKA -->
-    <div class="hidden lg:block nav-search">
-      <form id="nav-search-form" class="relative">
-        <input 
-          type="text" 
-          id="nav-search-input"
-          placeholder="Szukaj..." 
-          class="search-input"
-        />
-        <button type="submit" class="search-submit" aria-label="Szukaj">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-      </form>
-    </div>
+   <!-- WYSZUKIWARKA (Pagefind) -->
+<div class="hidden lg:block nav-search">
+  <div id="search"></div>
+</div>
 
     <!-- Language switcher + Mobile hamburger -->
     <div class="flex items-center gap-3">
@@ -263,6 +251,19 @@ const langItems = [
   .search-submit:hover {
     color: #f59e0b;
   }
+
+#search {
+  width: 260px;
+}
+
+.pagefind-ui {
+  --pagefind-ui-font: inherit;
+  --pagefind-ui-border-radius: 8px;
+  --pagefind-ui-background: #1f2937;
+  --pagefind-ui-text: #e5e7eb;
+  --pagefind-ui-border: #4b5563;
+}
+
 </style>
 
 <script is:inline>
@@ -313,20 +314,18 @@ const langItems = [
       });
     }
 
-    // Wyszukiwarka w nawigacji
-    const searchForm = document.getElementById('nav-search-form');
-    const searchInput = document.getElementById('nav-search-input');
+    import { PagefindUI } from '@pagefind/default-ui';
 
-    if (searchForm && searchInput) {
-      searchForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const query = searchInput.value.trim();
-        if (query.length > 0) {
-          window.location.href = `/search?search=${encodeURIComponent(query)}`;
-        } else {
-          window.location.href = '/blog';
-        }
-      });
+  new PagefindUI({
+    element: "#search",
+    showImages: false,
+    showEmptyFilters: false,
+    resetStyles: false,
+    translations: {
+      placeholder: "Szukaj artykułów i cykli...",
+      clear_search: "Wyczyść",
+      load_more: "Załaduj więcej",
+      zero_results: "Brak wyników dla [SEARCH_TERM]",
     }
-  })();
+  });
 </script>
