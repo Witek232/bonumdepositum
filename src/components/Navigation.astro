@@ -314,7 +314,28 @@ const langItems = [
       });
     }
 
-    import { PagefindUI } from '@pagefind/default-ui';
+    <!-- WYSZUKIWARKA (Pagefind) -->
+<div class="hidden lg:block nav-search">
+  <div id="search"></div>
+</div>
+
+<style>
+  #search {
+    width: 260px;
+  }
+  
+  .pagefind-ui {
+    --pagefind-ui-font: inherit;
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-background: #1f2937;
+    --pagefind-ui-text: #e5e7eb;
+    --pagefind-ui-border: #4b5563;
+  }
+</style>
+
+<script>
+  import { PagefindUI } from '@pagefind/default-ui';
+  import '@pagefind/default-ui/css/ui.css';
 
   new PagefindUI({
     element: "#search",
