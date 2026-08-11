@@ -74,7 +74,7 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   </script>
 </head>
 
-<body
+<body data-pagefind-body>
   x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenuOpen: false }"
   x-bind:class="{ 'dark': darkMode }"
   x-init="$watch('darkMode', val => {
