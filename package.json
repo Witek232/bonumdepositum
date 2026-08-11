@@ -16,6 +16,7 @@
     "@astrojs/markdown-satteri": "^0.2.1",
     "@astrojs/mdx": "^6.0.1",
     "@astrojs/sitemap": "^3.7.3",
+    "@pagefind/component-ui": "^1.5.2",
     "@tailwindcss/postcss": "^4.3.0",
     "alpinejs": "^3.14.8",
     "astro": "^6.4.2",
