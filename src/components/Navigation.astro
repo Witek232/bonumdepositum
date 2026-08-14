@@ -71,7 +71,7 @@ const langItems = [
           >
             <a
               href={item.href}
-              class={`relative px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 flex items-center gap-1.5 no-underline ${
+              class={`relative px-4 py-2 rounded-lg text-base font-semibold transition-all duration-200 flex items-center gap-1.5 no-underline ${
                 isActive
                   ? 'text-gold-400 bg-gold-500/10'
                   : 'text-parchment-200/70 hover:text-parchment-100 hover:bg-parchment-200/5'
@@ -199,7 +199,7 @@ const langItems = [
             <div class="flex items-center justify-between">
               <a
                 href={item.href}
-                class={`block px-4 py-3 rounded-lg text-base font-medium transition-colors no-underline flex-1 ${
+                class={`block px-4 py-3 rounded-lg text-base font-semibold transition-colors no-underline flex-1 ${
                   isActive
                     ? 'text-gold-400 bg-gold-500/10'
                     : 'text-parchment-200/70 hover:text-parchment-100 hover:bg-parchment-200/5'
@@ -259,7 +259,7 @@ const langItems = [
           {langItems.map(l => (
             <a
               href={l.href}
-              class={`px-3 py-1.5 rounded-lg text-base font-medium transition-colors no-underline ${
+              class={`px-3 py-1.5 rounded-lg text-base font-semibold transition-colors no-underline ${
                 l.code === lang
                   ? 'bg-gold-500/20 text-gold-400'
                   : 'text-parchment-200/50 hover:text-parchment-200 hover:bg-parchment-200/5'

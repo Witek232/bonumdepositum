@@ -71,7 +71,7 @@ const sourceLabel = manifestUrl.includes('polona.pl') ? 'Polona.pl' : 'IIIF Mani
       console.error('IIIFViewer:', message);
 
       container.innerHTML =
-        '<div style="display:flex;align-items:center;justify-content:center;height:100%;min-height:260px;color:#d4a843;font-family:serif;text-align:center;padding:2rem;background:#111">' +
+        '<div style="display:flex;align-items:center;justify-content:center;height:100%;min-height:260px;color:#d4a843;font-family:var(--font-serif, &quot;Noto Serif&quot;, Georgia, &quot;Times New Roman&quot;, serif);text-align:center;padding:2rem;background:#111">' +
           '<div>' +
             '⚠️ Nie udało się załadować czytnika.<br>' +
             '<small style="display:block;margin-top:.5rem;color:#aaa">' + String(message) + '</small>' +
