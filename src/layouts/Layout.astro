@@ -21,6 +21,20 @@ export interface Props {
    *   - wewnętrzny <div> max-w-[50rem] ogranicza szerokość tekstu
    */
   heroPage?: boolean;
+  /** Typ Open Graph: website (domyślnie) lub article */
+  type?: 'website' | 'article';
+  /** Data publikacji (wymagana dla type="article") — ISO lub Date */
+  datePublished?: string | Date;
+  /** Data modyfikacji (opcjonalna dla type="article") — ISO lub Date */
+  dateModified?: string | Date;
+  /** Autor (dla type="article") */
+  author?: string;
+  /** Dodatkowe obiekty JSON-LD (schema.org) wstrzykiwane do @graph */
+  schema?: Record<string, unknown>[];
+  /** noindex — np. strona 404 */
+  noindex?: boolean;
+  /** Pomiń <link rel="canonical"> (np. strona 404 — nie powinna mieć canonical) */
+  omitCanonical?: boolean;
 }
 
 const {
@@ -29,11 +43,54 @@ const {
   image = '/og-image.jpg',
   lang = 'pl',
   heroPage = false,
+  type = 'website',
+  datePublished,
+  dateModified,
+  author,
+  schema = [],
+  noindex = false,
+  omitCanonical = false,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const siteUrl = Astro.site ?? new URL('https://bonumdepositum.eu/');
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+const ogImageURL = new URL(image, siteUrl);
 const siteName = 'Bonum Depositum';
 const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
+
+const pubDateISO = datePublished instanceof Date
+  ? datePublished.toISOString()
+  : datePublished ?? undefined;
+const modDateISO = dateModified instanceof Date
+  ? dateModified.toISOString()
+  : dateModified ?? pubDateISO;
+
+// === Dane strukturalne JSON-LD (schema.org) ===
+const schemaGraph = [
+  {
+    '@type': 'WebSite',
+    '@id': `${siteUrl}#website`,
+    url: siteUrl.toString(),
+    name: siteName,
+    inLanguage: 'pl-PL',
+    description:
+      'Portal o filozofii, duchowości i klasycznej edukacji katolickiej: artykuły, lekcje katechizmu, cykle tematyczne i czytelnia klasycznych tekstów.',
+    publisher: { '@id': `${siteUrl}#organization` },
+  },
+  {
+    '@type': 'Organization',
+    '@id': `${siteUrl}#organization`,
+    name: siteName,
+    url: siteUrl.toString(),
+    logo: `${siteUrl}favicon.svg`,
+  },
+  ...schema,
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': schemaGraph,
+};
 ---
 
 <!DOCTYPE html>
@@ -42,29 +99,45 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="generator" content={Astro.generator} />
+  <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+  <meta name="theme-color" content="#f6f1e6" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)" />
   <Font cssVariable="--font-noto-serif" />
-  <link rel="canonical" href={canonicalURL} />
+  {!omitCanonical && <link rel="canonical" href={canonicalURL} />}
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <title>{title} | {siteName}</title>
   <meta name="description" content={description} />
 
   <!-- Open Graph -->
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content={type} />
   <meta property="og:url" content={canonicalURL} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content={new URL(image, Astro.site)} />
+  <meta property="og:image" content={ogImageURL} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Bonum Depositum — filozofia, edukacja, duchowość" />
   <meta property="og:site_name" content={siteName} />
   <meta property="og:locale" content={locale} />
 
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content={canonicalURL} />
-  <meta property="twitter:title" content={title} />
-  <meta property="twitter:description" content={description} />
-  <meta property="twitter:image" content={new URL(image, Astro.site)} />
+  {type === 'article' && pubDateISO && (
+    <>
+      <meta property="article:published_time" content={pubDateISO} />
+      {modDateISO && <meta property="article:modified_time" content={modDateISO} />}
+      {author && <meta property="article:author" content={author} />}
+    </>
+  )}
 
-  <!-- Alpine.js -->
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content={canonicalURL} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageURL} />
+
+  <!-- Dane strukturalne JSON-LD -->
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <!-- Zapobiegaj FOUC + x-cloak -->
   <style>[x-cloak] { display: none !important; }</style>
@@ -89,25 +162,11 @@ const locale = lang === 'pl' ? 'pl_PL' : lang === 'en' ? 'en_US' : 'es_ES';
 
   {heroPage
     ? (
-      /*
-       * TRYB HERO (strona główna):
-       * - Brak pt-20 → Hero zaczyna od top:0 (nav jest fixed, nie zajmuje miejsca)
-       * - Brak max-w kontenera → Hero ma pełną szerokość viewport
-       * - Brak background → Hero sam ustawia ciemne tło przez własny gradient/obraz
-       * - overflow-x:hidden zamiast clip → zapobiega poziomemu scrollowi
-       */
       <main class="min-h-screen overflow-x-hidden">
         <slot />
       </main>
     )
     : (
-      /*
-       * TRYB PODSTRONY:
-       * - pt-20 = 80px = wysokość fixed nav (h-20) → treść nie jest przykryta
-       * - main-content → klasa z global.css nadaje jasne tło parchment-50
-       * - pb-12 → oddech na dole
-       * - max-w-[50rem] wewnątrz → optymalna szerokość kolumny dla czytelności
-       */
       <main class="main-content min-h-screen pt-20 pb-12 overflow-x-hidden">
         <div class="mx-auto max-w-[50rem] px-4 sm:px-6 lg:px-8">
           <slot />

@@ -61,14 +61,77 @@ const navT = {
   backToCycle: cycleId ? `← Wróć do cyklu` : '',
   audio: 'Odsłuch audio',
 };
+
+// === SEO: meta description z fallbackiem (część artykułów ma puste description) ===
+const metaDescription =
+  entry.data.description?.trim() ||
+  (entry.data as any).summary?.trim() ||
+  `Przeczytaj artykuł „${entry.data.title}” na Bonum Depositum — portalu poświęconym filozofii, duchowości i klasycznej edukacji.`;
+
+const canonicalUrl = `https://bonumdepositum.eu/blog/${entry.id}/`;
+const ogImageUrl = entry.data.image
+  ? `https://bonumdepositum.eu${entry.data.image}`
+  : 'https://bonumdepositum.eu/og-image.jpg';
+const pubDateISO = entry.data.pubDate.toISOString();
+
+// === Dane strukturalne: Article + BreadcrumbList (+ VideoObject dla lekcji wideo) ===
+const articleSchema: Record<string, unknown> = {
+  '@type': 'Article',
+  headline: entry.data.title,
+  description: metaDescription,
+  image: ogImageUrl,
+  datePublished: pubDateISO,
+  dateModified: pubDateISO,
+  inLanguage: entry.data.lang ?? 'pl',
+  author: { '@type': 'Organization', name: entry.data.author ?? 'Bonum Depositum' },
+  publisher: { '@id': 'https://bonumdepositum.eu/#organization' },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+};
+
+const breadcrumbSchema: Record<string, unknown> = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Strona główna', item: 'https://bonumdepositum.eu/' },
+    ...(cycleId
+      ? [{ '@type': 'ListItem', position: 2, name: 'Cykle tematyczne', item: `https://bonumdepositum.eu/cycles/` }]
+      : [{ '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://bonumdepositum.eu/blog/' }]),
+    ...(cycleId
+      ? [{ '@type': 'ListItem', position: 3, name: 'Cykl', item: `https://bonumdepositum.eu/cycles/${cycleId}/` }]
+      : []),
+    {
+      '@type': 'ListItem',
+      position: cycleId ? 4 : 3,
+      name: entry.data.title,
+    },
+  ],
+};
+
+const pageSchema: Record<string, unknown>[] = [articleSchema, breadcrumbSchema];
+
+if (hasVideo && videoId) {
+  pageSchema.push({
+    '@type': 'VideoObject',
+    name: entry.data.title,
+    description: metaDescription,
+    thumbnailUrl: [`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`],
+    uploadDate: pubDateISO,
+    embedUrl: `https://www.youtube.com/embed/${videoId}`,
+    contentUrl: `https://www.youtube.com/watch?v=${videoId}`,
+  });
+}
 ---
 
 <Layout
   title={entry.data.title}
-  description={entry.data.description}
+  description={metaDescription}
   lang={entry.data.lang ?? 'pl'}
   image={entry.data.image ?? '/og-image.jpg'}
   heroPage={true}
+  type="article"
+  datePublished={entry.data.pubDate}
+  dateModified={entry.data.pubDate}
+  author={entry.data.author ?? 'Bonum Depositum'}
+  schema={pageSchema}
 >
   <PageHero bgImage={entry.data.image ?? undefined} minHeight="min-h-[60vh]">
     {cycleId && (

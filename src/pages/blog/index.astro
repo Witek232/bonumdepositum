@@ -10,9 +10,10 @@ const posts = allPosts
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
 const t = {
-  title: 'Blog',
+  title: 'Blog – filozofia, duchowość i kultura',
   subtitle: 'Artykuły i eseje',
-  description: 'Teksty niezależne — poza cyklami tematycznymi. Filozofia, duchowość, kultura i społeczeństwo.',
+  description:
+    'Eseje i artykuły o filozofii, duchowości, kulturze i społeczeństwie — od refleksji klasycznych po komentarze do aktualnych wydarzeń.',
   read: 'Czytaj',
   date: 'Data',
   author: 'Autor',
@@ -21,7 +22,7 @@ const t = {
 ---
 
 <Layout
-  title={t.title}
+  title="Blog – filozofia, duchowość i kultura"
   description={t.description}
   lang="pl"
   image="/og-image.jpg"

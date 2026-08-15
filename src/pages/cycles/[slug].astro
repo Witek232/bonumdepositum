@@ -39,14 +39,26 @@ const t = {
     read: 'Czytaj',
   },
 };
+
+const metaDescription = cycle.data.description?.trim() || `Cykl tematyczny „${cycle.data.title}” na Bonum Depositum.`;
+
+const breadcrumbSchema: Record<string, unknown> = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Strona główna', item: 'https://bonumdepositum.eu/' },
+    { '@type': 'ListItem', position: 2, name: 'Cykle tematyczne', item: 'https://bonumdepositum.eu/cycles/' },
+    { '@type': 'ListItem', position: 3, name: cycle.data.title },
+  ],
+};
 ---
 
 <Layout
   title={cycle.data.title}
-  description={cycle.data.description}
+  description={metaDescription}
   lang={cycle.data.lang ?? 'pl'}
   image={cycle.data.coverImage ?? '/og-image.jpg'}
   heroPage={true}
+  schema={[breadcrumbSchema]}
 >
   <PageHero bgImage={cycle.data.coverImage ?? undefined} minHeight="min-h-[60vh]">
     <a

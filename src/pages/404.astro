@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const t = {
+  title: 'Strona nie istnieje (404)',
+  description:
+    'Ta strona nie istnieje lub została przeniesiona. Wróć na stronę główną Bonum Depositum lub skorzystaj z nawigacji.',
+  heading: '404',
+  sub: 'Ta strona nie istnieje',
+  text: 'Adres, który otworzyłeś, jest nieprawidłowy lub treść została przeniesiona. Skorzystaj z poniższych linków, aby wrócić na właściwe strony.',
+  home: 'Strona główna',
+  blog: 'Blog',
+  cycles: 'Cykle tematyczne',
+  reading: 'Czytelnia',
+};
+---
+
+<Layout
+  title={t.title}
+  description={t.description}
+  lang="pl"
+  noindex={true}
+  omitCanonical={true}
+  heroPage={false}
+>
+  <div class="flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
+    <p class="font-display text-7xl font-bold text-gold-600 md:text-8xl">
+      {t.heading}
+    </p>
+    <h1 class="mt-4 text-2xl font-bold text-ink-900 md:text-3xl">
+      {t.sub}
+    </h1>
+    <p class="mx-auto mt-4 max-w-md text-ink-700/70">
+      {t.text}
+    </p>
+    <nav class="mt-10 flex flex-wrap items-center justify-center gap-3" aria-label="Linki pomocy">
+      <a
+        href="/"
+        class="rounded-lg bg-gold-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-gold-500"
+      >
+        {t.home}
+      </a>
+      <a
+        href="/blog/"
+        class="rounded-lg border border-parchment-300 bg-white px-5 py-2.5 text-sm font-semibold text-ink-800 hover:border-gold-500/40"
+      >
+        {t.blog}
+      </a>
+      <a
+        href="/cycles/"
+        class="rounded-lg border border-parchment-300 bg-white px-5 py-2.5 text-sm font-semibold text-ink-800 hover:border-gold-500/40"
+      >
+        {t.cycles}
+      </a>
+      <a
+        href="/reading/"
+        class="rounded-lg border border-parchment-300 bg-white px-5 py-2.5 text-sm font-semibold text-ink-800 hover:border-gold-500/40"
+      >
+        {t.reading}
+      </a>
+    </nav>
+  </div>
+</Layout>

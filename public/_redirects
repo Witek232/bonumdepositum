@@ -1,0 +1,7 @@
+# Przekierowania i obsługa 404 (Cloudflare Pages)
+# Mapy stron — konwencjonalny adres /sitemap.xml wskazuje na plik generowany przez @astrojs/sitemap
+/sitemap.xml            /sitemap-index.xml    302
+/sitemap_index.xml      /sitemap-index.xml    302
+
+# Każdy nieistniejący adres zwraca stronę 404 z kodem HTTP 404 (koniec soft-404)
+/*  /404.html  404
