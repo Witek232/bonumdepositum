@@ -1,7 +1,128 @@
+# =====================================================================
 # Przekierowania i obsługa 404 (Cloudflare Pages)
-# Mapy stron — konwencjonalny adres /sitemap.xml wskazuje na plik generowany przez @astrojs/sitemap
+#
+# ZASADY:
+#  - kolejność ma znaczenie: pierwsza pasująca reguła wygrywa
+#  - reguły konkretne -> wzorce (* / :splat) -> catch-all 404 NA KOŃCU
+#  - parametry query (?start=10, ?format=feed&type=atom) są ignorowane
+#    przy dopasowaniu, więc jedna reguła pokrywa też paginację/feedy
+#
+# HOŚTY (tego pliku to NIE dotyczy — ustaw w Cloudflare):
+#  - www.bonumdepositum.eu -> apex: Redirect Rule (Single Redirect, edge):
+#      Request URL : https://www.bonumdepositum.eu/*
+#      Target URL  : https://bonumdepositum.eu/${1}
+#      Status      : 301, Preserve query string: Enabled
+#    NIE dodawaj www jako custom domain w Pages (powstałyby 2 hosty kanoniczne)
+#  - http -> https: obsługuje automatycznie Cloudflare (SSL/TLS mode: Full/Strict)
+# =====================================================================
+
+# --- Mapy stron: konwencjonalny adres /sitemap.xml -> plik @astrojs/sitemap ---
 /sitemap.xml            /sitemap-index.xml    302
 /sitemap_index.xml      /sitemap-index.xml    302
+
+# =====================================================================
+# MIGRACJA JOOMLA -> ASTRO (stan: 22.08.2026)
+# Cel każdego 301 zweryfikowany z mapą https://bonumdepositum.eu/sitemap-0.xml
+# Źródło URL-i: raporty GSC (zindeksowane / 5xx / 404 / canonical / zeskanowane)
+# =====================================================================
+
+# --- Blog: stara strona /blog (Joomla, także ?start=10) -> nowa lista postów ---
+/blog  /blog/  301
+
+# --- KATECHIZM — indeks cyklu (stara kategoria Joomla, także ?start=40) ---
+/fulton-j-sheen/katechizm-katolicki      /cycles/katechizm-katolicki/  301
+/fulton-j-sheen/katechizm-katolicki/     /cycles/katechizm-katolicki/  301
+
+# --- KATECHIZM — lekcje (9 adresów znanych z GSC; resztę lekcji dołożyć
+#     jawnymi regułami, gdy wystąpią w kolejnych raportach GSC) ---
+/fulton-j-sheen/katechizm-katolicki/lekcja-01-filozofia-zycia-fulton-j-sheen        /blog/katechizm/katechizm-lekcja-01/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-01-filozofia-zycia-fulton-j-sheen/       /blog/katechizm/katechizm-lekcja-01/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-09-boskosc-chrystusa-fulton-j-sheen      /blog/katechizm/katechizm-lekcja-09/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-09-boskosc-chrystusa-fulton-j-sheen/     /blog/katechizm/katechizm-lekcja-09/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-20-komunizm-a-kosciol-fulton-j-sheen     /blog/katechizm/katechizm-lekcja-20/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-20-komunizm-a-kosciol-fulton-j-sheen/    /blog/katechizm/katechizm-lekcja-20/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-25-sakramenty-fulton-j-sheen             /blog/katechizm/katechizm-lekcja-25/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-25-sakramenty-fulton-j-sheen/            /blog/katechizm/katechizm-lekcja-25/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-27-bierzmowanie-fulton-j-sheen           /blog/katechizm/katechizm-lekcja-27/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-27-bierzmowanie-fulton-j-sheen/          /blog/katechizm/katechizm-lekcja-27/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-31-grzech-fulton-j-sheen                 /blog/katechizm/katechizm-lekcja-31/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-31-grzech-fulton-j-sheen/                /blog/katechizm/katechizm-lekcja-31/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-36-malzenstwo-fulton-j-sheen             /blog/katechizm/katechizm-lekcja-36/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-36-malzenstwo-fulton-j-sheen/            /blog/katechizm/katechizm-lekcja-36/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-37-sakrament-malzenstwa-fulton-j-sheen   /blog/katechizm/katechizm-lekcja-37/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-37-sakrament-malzenstwa-fulton-j-sheen/  /blog/katechizm/katechizm-lekcja-37/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-45-czysciec-fulton-j-sheen               /blog/katechizm/katechizm-lekcja-45/  301
+/fulton-j-sheen/katechizm-katolicki/lekcja-45-czysciec-fulton-j-sheen/              /blog/katechizm/katechizm-lekcja-45/  301
+
+# --- PODZIEMNY PODRĘCZNIK TYRANII — indeks serii (także ?format=feed&type=atom) ---
+/serie/podziemny-podrecznik-tyranii-dekonstrukcja-destrukcji      /cycles/podziemny-podrecznik-tyranii/  301
+/serie/podziemny-podrecznik-tyranii-dekonstrukcja-destrukcji/     /cycles/podziemny-podrecznik-tyranii/  301
+
+# --- PODZIEMNY PODRĘCZNIK TYRANII — wszystkie odcinki:
+#     slugi Joomla = slugi Astro (zweryfikowane: 01, 06, 10-bioetyka, 12, 13, 16,
+#     22, 32, 38), więc jeden wzorzec :splat pokrywa całość 01-47 ---
+/serie/podziemny-podrecznik-tyranii-dekonstrukcja-destrukcji/*  /blog/podrecznik-tyranii/:splat  301
+
+# --- SERCE — ARENA ZBAWIENIA — indeks serii ---
+/serie/serce-arena-zbawienia      /cycles/serce-arena-zbawienia/  301
+/serie/serce-arena-zbawienia/     /cycles/serce-arena-zbawienia/  301
+
+# --- SERCE — ARENA ZBAWIENIA — odcinki znane z GSC (02, 06):
+#     stare slugi zawierają "---" (z em-dasha w tytule), nowe slugi mają zwykły "-",
+#     więc wzorzec nie zadziała — reguły jawne. Kolejne części dodać tym schematem. ---
+/serie/serce-arena-zbawienia/02-wiecej-niz-uczucie---serce-w-mysli-hebrajskiej        /blog/serce-arena-zbawienia/02-wiecej-niz-uczucie-serce-w-mysli-hebrajskiej/  301
+/serie/serce-arena-zbawienia/02-wiecej-niz-uczucie---serce-w-mysli-hebrajskiej/       /blog/serce-arena-zbawienia/02-wiecej-niz-uczucie-serce-w-mysli-hebrajskiej/  301
+/serie/serce-arena-zbawienia/06-serce-boga-stalo-sie-cialem---tajemnica-wcielenia     /blog/serce-arena-zbawienia/06-serce-boga-stalo-sie-cialem-tajemnica-wcielenia/  301
+/serie/serce-arena-zbawienia/06-serce-boga-stalo-sie-cialem---tajemnica-wcielenia/    /blog/serce-arena-zbawienia/06-serce-boga-stalo-sie-cialem-tajemnica-wcielenia/  301
+
+# --- CZYTELNIA (lektury) ---
+/lektury/wychowanie/danysz-a-instrukcye-wychowawcze-jakoba-sobieskiego      /reading/danysz-antoni-o-wychowaniu/  301
+/lektury/wychowanie/danysz-a-instrukcye-wychowawcze-jakoba-sobieskiego/     /reading/danysz-antoni-o-wychowaniu/  301
+/lektury/wychowanie/zamojska-j-o-pracy      /reading/o-pracy-1923/  301
+/lektury/wychowanie/zamojska-j-o-pracy/     /reading/o-pracy-1923/  301
+/lektury/patriotyzm/zamoyski-jan-rada-sprawy-wojennej      /reading/zamoyski-rada-sprawy-wojennej/  301
+/lektury/patriotyzm/zamoyski-jan-rada-sprawy-wojennej/     /reading/zamoyski-rada-sprawy-wojennej/  301
+# stary slug nie miał "list-pasterski" (adres z raportu 404 w GSC)
+/lektury/patriotyzm/bilczewski-j-o-milosci-ojczyzny      /reading/bilczewski-j-o-milosci-ojczyzny-list-pasterski/  301
+/lektury/patriotyzm/bilczewski-j-o-milosci-ojczyzny/     /reading/bilczewski-j-o-milosci-ojczyzny-list-pasterski/  301
+
+# --- EDUKACJA (stara kategoria) -> nowe artykuły blogowe ---
+/edukacja/rygor-i-rekonesans-jakobowe-ksztaltowanie-synowskich-losow      /blog/jakobowe-ksztaltowanie-synowskich-losow-marka-i-jana-sobieskich/  301
+/edukacja/rygor-i-rekonesans-jakobowe-ksztaltowanie-synowskich-losow/     /blog/jakobowe-ksztaltowanie-synowskich-losow-marka-i-jana-sobieskich/  301
+# ten sam esej przemianowany przy migracji (stary tytuł: "dlaczego ludzie z
+# dyplomami wciąż padają ofiarami reklam i propagandy")
+/edukacja/wyksztalcenie-vs-manipulacja-dlaczego-ludzie-z-dyplomami-wciaz-padaja-ofiarami-reklam-i-propagandy      /blog/iluzja-wyksztalconego-umyslu/  301
+/edukacja/wyksztalcenie-vs-manipulacja-dlaczego-ludzie-z-dyplomami-wciaz-padaja-ofiarami-reklam-i-propagandy/     /blog/iluzja-wyksztalconego-umyslu/  301
+# UWAGA — DO WERYFIKACJI: zakładam, że "Edukacja ku pełni człowieczeństwa" to esej
+# przemianowany na "Diagnoza i wizja zmian w polskim systemie edukacji".
+# Jeśli treść NIE jest ta sama -> usuń te 2 linie (URL wróci do 404).
+/edukacja/edukacja-ku-pelni-czlowieczenstwa      /blog/diagnoza-i-wizja-zmian-w-polskim-systemie-edukacji/  301
+/edukacja/edukacja-ku-pelni-czlowieczenstwa/     /blog/diagnoza-i-wizja-zmian-w-polskim-systemie-edukacji/  301
+
+# --- Pozostałe pojedyncze strony Joomla ---
+# Uroczysta Msza Święta Wielkanocna 1940 z komentarzem abp. Sheena
+/fulton-j-sheen/uroczysta-msza-swieta-wielkanocna-1940-r      /blog/uroczysta-msza-swieta-wielkanocna-1940-komentarz-abp-fultona-j-sheena/  301
+/fulton-j-sheen/uroczysta-msza-swieta-wielkanocna-1940-r/     /blog/uroczysta-msza-swieta-wielkanocna-1940-komentarz-abp-fultona-j-sheena/  301
+# Joomla: kategoria "Uncategorised" (wszystkie artykuły) -> lista bloga
+/component/content/category/uncategorised      /blog/  301
+/component/content/category/uncategorised/     /blog/  301
+
+# --- Warianty językowe EN/ES (linki w nawigacji, ale strony nie istnieją) ---
+# Docelowo: albo wdrożyć realne tłumaczenia + hreflang, albo usunąć EN/ES
+# z src/components/Navigation.astro (wtedy te reguły i tak przydadzą się
+# na stare linki zewnętrzne)
+/en      /  301
+/en/     /  301
+/es      /  301
+/es/     /  301
+
+# =====================================================================
+# Celowo BEZ przekierowania (zostaje prawdziwe 404 z catch-all poniżej):
+#   /component/users/remind  — stary komponent Joomla; w Astro nie ma kont,
+#                              więc 404 jest poprawne (NIE na stronę główną)
+#   www.*  i  http://        — obsługuje Cloudflare (Redirect Rule + SSL mode),
+#                              nie _redirects
+# =====================================================================
 
 # Każdy nieistniejący adres zwraca stronę 404 z kodem HTTP 404 (koniec soft-404)
 /*  /404.html  404
