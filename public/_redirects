@@ -126,3 +126,14 @@
 
 # Każdy nieistniejący adres zwraca stronę 404 z kodem HTTP 404 (koniec soft-404)
 /*  /404.html  404
+
+# === FIX obrazy: stare URL-e z spacją / duzymi literami -> nowe SEO-friendly (2026-08-29) ===
+/images/FS-WZ%20(1).jpg  /images/katechizm-katolicki-fulton-sheen.jpg  301
+/images/FS-WZ%20(1).JPG  /images/katechizm-katolicki-fulton-sheen.jpg  301
+/images/Serce.webp  /images/serce.webp  301
+/images/PPM-smc.jpg  /images/podrecznik-tyranii-cover.jpg  301
+/images/PPM-smc.JPG  /images/podrecznik-tyranii-cover.jpg  301
+/images/Samuel.webp  /images/serce.webp  301
+/images/Adam_i_Ewa.webp  /images/serce.webp  301
+/images/Jezus_i_samarytanka.webp  /images/serce.webp  301
+

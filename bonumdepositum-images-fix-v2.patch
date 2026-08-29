@@ -1,0 +1,785 @@
+diff --git a/public/_redirects b/public/_redirects
+index 1d50456..d964adb 100644
+--- a/public/_redirects
++++ b/public/_redirects
+@@ -126,3 +126,14 @@
+ 
+ # Każdy nieistniejący adres zwraca stronę 404 z kodem HTTP 404 (koniec soft-404)
+ /*  /404.html  404
++
++# === FIX obrazy: stare URL-e z spacją / duzymi literami -> nowe SEO-friendly (2026-08-29) ===
++/images/FS-WZ%20(1).jpg  /images/katechizm-katolicki-fulton-sheen.jpg  301
++/images/FS-WZ%20(1).JPG  /images/katechizm-katolicki-fulton-sheen.jpg  301
++/images/Serce.webp  /images/serce.webp  301
++/images/PPM-smc.jpg  /images/podrecznik-tyranii-cover.jpg  301
++/images/PPM-smc.JPG  /images/podrecznik-tyranii-cover.jpg  301
++/images/Samuel.webp  /images/serce.webp  301
++/images/Adam_i_Ewa.webp  /images/serce.webp  301
++/images/Jezus_i_samarytanka.webp  /images/serce.webp  301
++
+diff --git a/public/images/FS-WZ (1).jpg b/public/images/katechizm-katolicki-fulton-sheen.jpg
+similarity index 100%
+rename from public/images/FS-WZ (1).jpg
+rename to public/images/katechizm-katolicki-fulton-sheen.jpg
+diff --git a/public/images/PPM-smc.jpg b/public/images/podrecznik-tyranii-cover.jpg
+similarity index 100%
+rename from public/images/PPM-smc.jpg
+rename to public/images/podrecznik-tyranii-cover.jpg
+diff --git a/public/images/Serce.webp b/public/images/serce.webp
+similarity index 100%
+rename from public/images/Serce.webp
+rename to public/images/serce.webp
+diff --git a/src/content/blog/jakobowe-ksztaltowanie-synowskich-losow-marka-i-jana-sobieskich.mdx b/src/content/blog/jakobowe-ksztaltowanie-synowskich-losow-marka-i-jana-sobieskich.mdx
+index 5d94cc1..f962a5f 100644
+--- a/src/content/blog/jakobowe-ksztaltowanie-synowskich-losow-marka-i-jana-sobieskich.mdx
++++ b/src/content/blog/jakobowe-ksztaltowanie-synowskich-losow-marka-i-jana-sobieskich.mdx
+@@ -6,7 +6,7 @@ description: "Analiza instrukcji wychowawczych Jakóba Sobieskiego i ich wpływu
+ author: "Bonum Depositum"
+ lang: "pl"
+ tags: ["historia", "Sobiescy", "Jakub Sobieski", "Jan III Sobieski", "Marek Sobieski", "wychowanie", "edukacja", "Rzeczpospolita", "husaria"]
+-image: "/images/husarz.webp"
++image: /images/husarz.webp
+ ---
+ <img
+   src="/images/husarz.webp"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-01.mdx b/src/content/blog/katechizm/katechizm-lekcja-01.mdx
+index 3e34778..c7e6847 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-01.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-01.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'sens życia', 'egzystencjalizm']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ 
+ # NOWE POLA — zgodne ze schematem v2
+ lessonNumber: 1
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-02.mdx b/src/content/blog/katechizm/katechizm-lekcja-02.mdx
+index 1736b7c..dad2c00 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-02.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-02.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'sumienie', 'Bóg', 'sakramenty']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 2
+ videoId: 20S3v2N0TRA
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-03.mdx b/src/content/blog/katechizm/katechizm-lekcja-03.mdx
+index 53a6b12..ce571c0 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-03.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-03.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'sumienie', 'Bóg', 'łaska', 'sakramenty']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 3
+ videoId: 20S3v2N0TRA
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-04.mdx b/src/content/blog/katechizm/katechizm-lekcja-04.mdx
+index 7a183a0..5b974a6 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-04.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-04.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'wolność', 'Chrystus', 'kapłaństwo']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 4
+ videoId: HbPeUSPUcXQ
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-05.mdx b/src/content/blog/katechizm/katechizm-lekcja-05.mdx
+index 99cad93..86ea7e7 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-05.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-05.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'wolność']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 5
+ videoId: bdyXr2l7G4A
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-06.mdx b/src/content/blog/katechizm/katechizm-lekcja-06.mdx
+index b7f21e8..11a977c 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-06.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-06.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 6
+ videoId: RQObnw9A6A8
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-07.mdx b/src/content/blog/katechizm/katechizm-lekcja-07.mdx
+index 42a7f7f..4279ad1 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-07.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-07.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'cuda']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 7
+ videoId: 7dU1JDW6SVI
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-08.mdx b/src/content/blog/katechizm/katechizm-lekcja-08.mdx
+index f31814e..920cf9b 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-08.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-08.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'objawienie']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 8
+ videoId: 20S3v2N0TRA
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-09.mdx b/src/content/blog/katechizm/katechizm-lekcja-09.mdx
+index 09774e9..665b3d8 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-09.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-09.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja', 'miłość']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 9
+ videoId: Y5qRa70S3V8
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-10.mdx b/src/content/blog/katechizm/katechizm-lekcja-10.mdx
+index 772692f..c84c422 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-10.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-10.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'człowieczeństwo Chrystusa', 'pasja']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 10
+ videoId: 2mxAahTLrG4
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-11.mdx b/src/content/blog/katechizm/katechizm-lekcja-11.mdx
+index c4214a4..e36f387 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-11.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-11.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Trójca Święta', 'Duch Święty', 'miłość']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 11
+ videoId: Xb-H7eys0eg
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-12.mdx b/src/content/blog/katechizm/katechizm-lekcja-12.mdx
+index a2a8bdf..520dc01 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-12.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-12.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Chrystus', 'chrzest']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 12
+ videoId: saTSE2D3Ods
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-13.mdx b/src/content/blog/katechizm/katechizm-lekcja-13.mdx
+index 50244cf..107e3e0 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-13.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-13.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'Credo']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 13
+ videoId: AlYpAOgsEMA
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-14.mdx b/src/content/blog/katechizm/katechizm-lekcja-14.mdx
+index fa83510..7ce0caa 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-14.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-14.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'boskość Chrystusa', 'Credo']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 14
+ videoId: xCkI5akGV9g
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-15.mdx b/src/content/blog/katechizm/katechizm-lekcja-15.mdx
+index 90269cf..b508e40 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-15.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-15.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Chrystus', 'Credo', 'pasja', 'wniebowstąpienie']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 15
+ videoId: K8xY7hEzDuk
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-16.mdx b/src/content/blog/katechizm/katechizm-lekcja-16.mdx
+index 7e56a8a..69e0371 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-16.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-16.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'cuda', 'objawienie']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 16
+ videoId: tH0PO_l94Us
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-17.mdx b/src/content/blog/katechizm/katechizm-lekcja-17.mdx
+index 3979649..7a7cf75 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-17.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-17.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'Kościół']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 17
+ videoId: WL0UydVvz7Y
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-18.mdx b/src/content/blog/katechizm/katechizm-lekcja-18.mdx
+index 14c2681..7f305d8 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-18.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-18.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'objawienie', 'pasja']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 18
+ videoId: Ngv3OEaT8MM
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-19.mdx b/src/content/blog/katechizm/katechizm-lekcja-19.mdx
+index 44aa109..7ba94dc 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-19.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-19.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'Kościół', 'św. Piotr']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 19
+ videoId: Kv3VLTxjcCE
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-20.mdx b/src/content/blog/katechizm/katechizm-lekcja-20.mdx
+index aa55f83..78baab3 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-20.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-20.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'wolność', 'Chrystus', 'Kościół', 'św. Piotr']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 20
+ videoId: WsX82SXv5Rg
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-21.mdx b/src/content/blog/katechizm/katechizm-lekcja-21.mdx
+index c226c00..6b8a732 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-21.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-21.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'wolność', 'Chrystus', 'cuda']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 21
+ videoId: 2fPV4xFlpIY
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-22.mdx b/src/content/blog/katechizm/katechizm-lekcja-22.mdx
+index f4f4b3b..ecc3010 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-22.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-22.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja', 'autorytet Kościoła']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 22
+ videoId: HmZTMcwGbpQ
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-23.mdx b/src/content/blog/katechizm/katechizm-lekcja-23.mdx
+index 81211cb..a9e60c7 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-23.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-23.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'wolność', 'Chrystus', 'grzech pierworodny']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 23
+ videoId: 8FXninmiehw
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-24.mdx b/src/content/blog/katechizm/katechizm-lekcja-24.mdx
+index 54a1be8..aad1c65 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-24.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-24.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'grzech pierworodny', 'łaska', 'sakramenty', 'chrzest']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 24
+ videoId: rlSyq2YNA50
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-25.mdx b/src/content/blog/katechizm/katechizm-lekcja-25.mdx
+index 19b24a1..e6be62c 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-25.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-25.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'objawienie', 'łaska']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 25
+ videoId: vRx0pTAVUhw
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-26.mdx b/src/content/blog/katechizm/katechizm-lekcja-26.mdx
+index 7ff6753..f6de212 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-26.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-26.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja', 'Kościół']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 26
+ videoId: bwa2kLe5iKw
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-27.mdx b/src/content/blog/katechizm/katechizm-lekcja-27.mdx
+index 2b31928..ccd5385 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-27.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-27.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'sakramenty', 'chrzest']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 27
+ videoId: 0o3pwi1dXI0
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-28.mdx b/src/content/blog/katechizm/katechizm-lekcja-28.mdx
+index 84dd68d..afbe8e5 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-28.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-28.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Chrystus', 'sakramenty', 'Eucharystia']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 28
+ videoId: m0KBzwU6iu0
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-29.mdx b/src/content/blog/katechizm/katechizm-lekcja-29.mdx
+index 6710f84..52d162c 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-29.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-29.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja', 'sakramenty']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 29
+ videoId: e5X5p1itHPg
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-30.mdx b/src/content/blog/katechizm/katechizm-lekcja-30.mdx
+index 22be6c1..cd50347 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-30.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-30.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Chrystus', 'boskość Chrystusa', 'człowieczeństwo Chrystusa', 'pasja']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 30
+ videoId: 7ubVxjGRbh0
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-31.mdx b/src/content/blog/katechizm/katechizm-lekcja-31.mdx
+index 368abab..bfe8d0e 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-31.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-31.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'sumienie', 'Bóg', 'wolność', 'Chrystus']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 31
+ videoId: JjjiIhjMvo4
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-32.mdx b/src/content/blog/katechizm/katechizm-lekcja-32.mdx
+index a2d9f30..99120d7 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-32.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-32.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja', 'sakramenty']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 32
+ videoId: DnJ3oFSptcE
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-33.mdx b/src/content/blog/katechizm/katechizm-lekcja-33.mdx
+index b9ca313..6488d94 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-33.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-33.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'sakramenty', 'pokuta']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 33
+ videoId: x8XIvA6Rwhg
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-34.mdx b/src/content/blog/katechizm/katechizm-lekcja-34.mdx
+index cbf621e..1aefa6b 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-34.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-34.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Chrystus', 'cuda', 'sakramenty', 'sakrament chorych']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 34
+ videoId: iC_7dAw3BIs
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-35.mdx b/src/content/blog/katechizm/katechizm-lekcja-35.mdx
+index 0a814dc..f87d305 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-35.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-35.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja', 'Kościół']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 35
+ videoId: slJr4jd6A0I
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-36.mdx b/src/content/blog/katechizm/katechizm-lekcja-36.mdx
+index 6641805..7eb19d5 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-36.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-36.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'małżeństwo', 'seksualność', 'miłość']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 36
+ videoId: AWxvhgnu7DU
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-37.mdx b/src/content/blog/katechizm/katechizm-lekcja-37.mdx
+index af10f62..8d7f3f6 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-37.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-37.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja', 'Kościół']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 37
+ videoId: Ige4gP7UhP4
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-38.mdx b/src/content/blog/katechizm/katechizm-lekcja-38.mdx
+index 580e73e..ffd55e9 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-38.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-38.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'kapłaństwo', 'seksualność', 'miłość']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 38
+ videoId: 53hbDggy_MI
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-39.mdx b/src/content/blog/katechizm/katechizm-lekcja-39.mdx
+index a3acc8a..47656da 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-39.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-39.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'małżeństwo', 'miłość']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 39
+ videoId: Rx1LelRwgFo
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-40.mdx b/src/content/blog/katechizm/katechizm-lekcja-40.mdx
+index e826aef..9ca9d61 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-40.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-40.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'małżeństwo', 'miłość', 'modlitwa']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 40
+ videoId: QvBlahTod4o
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-41.mdx b/src/content/blog/katechizm/katechizm-lekcja-41.mdx
+index f629e22..8899724 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-41.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-41.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Dekalog', 'miłość', 'modlitwa']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 41
+ videoId: -F9RKnGpRis
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-42.mdx b/src/content/blog/katechizm/katechizm-lekcja-42.mdx
+index fb6f18a..1dc9855 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-42.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-42.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'autorytet Kościoła', 'Dekalog', 'miłość']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 42
+ videoId: bq5sSXjh7t8
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-43.mdx b/src/content/blog/katechizm/katechizm-lekcja-43.mdx
+index 133eb5d..6c9e414 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-43.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-43.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'pasja', 'Kościół']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 43
+ videoId: GACBUkoTzWs
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-44.mdx b/src/content/blog/katechizm/katechizm-lekcja-44.mdx
+index 3aa1270..ba8733d 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-44.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-44.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'objawienie', 'pasja']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 44
+ videoId: cn4ZS6osW7E
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-45.mdx b/src/content/blog/katechizm/katechizm-lekcja-45.mdx
+index fd820cd..2d10e0f 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-45.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-45.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Kościół', 'miłość', 'czyściec']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 45
+ videoId: zMM8Tp2F_lo
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-46.mdx b/src/content/blog/katechizm/katechizm-lekcja-46.mdx
+index 221acca..4a911e0 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-46.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-46.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Chrystus', 'miłość', 'niebo', 'piekło']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 46
+ videoId: AWj4ljBzk5E
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-47.mdx b/src/content/blog/katechizm/katechizm-lekcja-47.mdx
+index 630b654..2b2248d 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-47.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-47.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'sumienie', 'Bóg', 'wolność', 'Chrystus']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 47
+ videoId: GSdkJeZiwAk
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-48.mdx b/src/content/blog/katechizm/katechizm-lekcja-48.mdx
+index 361d0f0..dada485 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-48.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-48.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Chrystus', 'Maryja', 'św. Piotr']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 48
+ videoId: wlCSevj3kAA
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-49.mdx b/src/content/blog/katechizm/katechizm-lekcja-49.mdx
+index 362490a..36355be 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-49.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-49.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'Kościół', 'św. Piotr', 'chrzest']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 49
+ videoId: 5jyeF0S0iEY
+ videoDuration: "27:35"
+diff --git a/src/content/blog/katechizm/katechizm-lekcja-50.mdx b/src/content/blog/katechizm/katechizm-lekcja-50.mdx
+index aead652..6e3d4ca 100644
+--- a/src/content/blog/katechizm/katechizm-lekcja-50.mdx
++++ b/src/content/blog/katechizm/katechizm-lekcja-50.mdx
+@@ -6,7 +6,7 @@ author: Fulton J. Sheen
+ cycle: katechizm-katolicki
+ lang: pl
+ tags: ['filozofia', 'Fulton Sheen', 'katechizm', 'wiara katolicka', 'Bóg', 'wolność']
+-image: /images/FS-WZ (1).jpg
++image: /images/katechizm-katolicki-fulton-sheen.jpg
+ lessonNumber: 50
+ videoId: -l-VMj5iFIY
+ videoDuration: "27:35"
+diff --git a/src/content/blog/serce-arena-zbawienia/01-zapomniana-swiatynia-dlaczego-serce-jest-kluczem-do-zrozumienia-czlowieka-i-boga.mdx b/src/content/blog/serce-arena-zbawienia/01-zapomniana-swiatynia-dlaczego-serce-jest-kluczem-do-zrozumienia-czlowieka-i-boga.mdx
+index 3ef2c83..c442447 100644
+--- a/src/content/blog/serce-arena-zbawienia/01-zapomniana-swiatynia-dlaczego-serce-jest-kluczem-do-zrozumienia-czlowieka-i-boga.mdx
++++ b/src/content/blog/serce-arena-zbawienia/01-zapomniana-swiatynia-dlaczego-serce-jest-kluczem-do-zrozumienia-czlowieka-i-boga.mdx
+@@ -7,7 +7,7 @@ cycle: serce-arena-zbawienia
+ lang: pl
+ tags: ['serce', 'duchowość', 'Biblia', 'wnętrze', 'modlitwa', 'nawrócenie']
+ lessonNumber: 1
+-image: /images/Serce.webp
++image: /images/serce.webp
+ ---
+ 
+ „Królestwo Boże jest w was" (Łk 17,21)
+diff --git a/src/content/blog/serce-arena-zbawienia/02-wiecej-niz-uczucie-serce-w-mysli-hebrajskiej.mdx b/src/content/blog/serce-arena-zbawienia/02-wiecej-niz-uczucie-serce-w-mysli-hebrajskiej.mdx
+index b7e0ac1..f77d44d 100644
+--- a/src/content/blog/serce-arena-zbawienia/02-wiecej-niz-uczucie-serce-w-mysli-hebrajskiej.mdx
++++ b/src/content/blog/serce-arena-zbawienia/02-wiecej-niz-uczucie-serce-w-mysli-hebrajskiej.mdx
+@@ -7,7 +7,7 @@ cycle: serce-arena-zbawienia
+ lang: pl
+ tags: ['serce', 'hebrajska myśl', 'Biblia', 'integralność', 'mądrość', 'sumienie']
+ lessonNumber: 2
+-image: /images/Samuel.webp
++image: /images/serce.webp
+ ---
+ 
+ > _„Mów, Panie, bo sługa Twój słucha" (1 Sm 3,10)_
+diff --git a/src/content/blog/serce-arena-zbawienia/03-serce-zranione-diagnoza-ludzkiej-kondycji.mdx b/src/content/blog/serce-arena-zbawienia/03-serce-zranione-diagnoza-ludzkiej-kondycji.mdx
+index e96ed32..55d724e 100644
+--- a/src/content/blog/serce-arena-zbawienia/03-serce-zranione-diagnoza-ludzkiej-kondycji.mdx
++++ b/src/content/blog/serce-arena-zbawienia/03-serce-zranione-diagnoza-ludzkiej-kondycji.mdx
+@@ -7,7 +7,7 @@ cycle: serce-arena-zbawienia
+ lang: pl
+ tags: ['serce', 'grzech', 'zatwardziałość', 'diagnoza', 'nawrócenie', 'duchowość']
+ lessonNumber: 3
+-image: /images/Adam_i_Ewa.webp
++image: /images/serce.webp
+ ---
+ 
+ Serce ludzkie jest jak arena, na której toczy się walka o zbawienie. To w nim splatają się nasze najgłębsze pragnienia, tęsknoty i lęki, ale także nasze upadki, grzechy i zatwardziałość. Biblia ukazuje serce jako centrum duchowego życia człowieka – miejsce, w którym spotykamy Boga, ale też przestrzeń, która od zarania dziejów nosi ślady pęknięcia.
+diff --git a/src/content/blog/serce-arena-zbawienia/04-serce-spragnione-tesknota-czlowieka-za-bogiem.mdx b/src/content/blog/serce-arena-zbawienia/04-serce-spragnione-tesknota-czlowieka-za-bogiem.mdx
+index 62cd7af..6e2e3ef 100644
+--- a/src/content/blog/serce-arena-zbawienia/04-serce-spragnione-tesknota-czlowieka-za-bogiem.mdx
++++ b/src/content/blog/serce-arena-zbawienia/04-serce-spragnione-tesknota-czlowieka-za-bogiem.mdx
+@@ -7,7 +7,7 @@ cycle: serce-arena-zbawienia
+ lang: pl
+ tags: ['serce', 'tęsknota', 'Bóg', 'pragnienie', 'Augustyn', 'Psalmy']
+ lessonNumber: 4
+-image: /images/Jezus_i_samarytanka.webp
++image: /images/serce.webp
+ ---
+ 
+ ## Pragnienie, które definiuje serce
+diff --git a/src/content/cycles/katechizm-katolicki.mdx b/src/content/cycles/katechizm-katolicki.mdx
+index 5ee747b..397266f 100644
+--- a/src/content/cycles/katechizm-katolicki.mdx
++++ b/src/content/cycles/katechizm-katolicki.mdx
+@@ -3,7 +3,7 @@ title: "Katechizm katolicki"
+ description: "Bezcenna kolekcja 50 lekcji w formie wykładów wideo, zapisanych w 1965 roku przez arcybiskupa Fultona J. Sheena, przedstawiających nauki Kościoła katolickiego."
+ order: 1
+ lang: "pl"
+-coverImage: "/images/FS-WZ (1).jpg" # Opcjonalnie: ścieżka do zdjęcia w folderze /public
++coverImage: "/images/katechizm-katolicki-fulton-sheen.jpg" # Opcjonalnie: ścieżka do zdjęcia w folderze /public
+ ---
+ 
+ Seria „Katechizm katolicki” to niezwykłe dzieło ewangelizacyjne, które wyprzedziło swoje czasy. W 1965 roku arcybiskup Fulton J. Sheen, jeden z najwybitniejszych mówców i teologów XX wieku, nagrał cykl 50 telewizyjnych lekcji, w których przystępnie, z wdziękiem i głębią filozoficzną wyjaśnia fundamenty wiary katolickiej.
+diff --git a/src/content/cycles/podziemny-podrecznik-tyranii.mdx b/src/content/cycles/podziemny-podrecznik-tyranii.mdx
+index 514c850..9450df9 100644
+--- a/src/content/cycles/podziemny-podrecznik-tyranii.mdx
++++ b/src/content/cycles/podziemny-podrecznik-tyranii.mdx
+@@ -1,7 +1,7 @@
+ ---
+ title: 'Podziemny Podręcznik Tyranii — Dekonstrukcja destrukcji'
+ description: 'Seria 47 artykułów analizujących mechanizmy nowoczesnej kontroli, inżynierii społecznej i neutralizacji opozycji w systemach demokratycznych. Tekst przywodzi na myśl Kafkę z laboratorium NSA.'
+-coverImage: /images/PPM-smc.jpg
++coverImage: /images/podrecznik-tyranii-cover.jpg
+ order: 2
+ lang: pl
+ totalLessons: 47
+diff --git a/src/content/cycles/serce-arena-zbawienia.mdx b/src/content/cycles/serce-arena-zbawienia.mdx
+index b572f04..98a26b4 100644
+--- a/src/content/cycles/serce-arena-zbawienia.mdx
++++ b/src/content/cycles/serce-arena-zbawienia.mdx
+@@ -1,7 +1,7 @@
+ ---
+ title: 'Serce: Arena Zbawienia'
+ description: 'Seria 16 artykułów zgłębiających biblijne rozumienie serca jako centrum duchowego życia człowieka — od diagnozy ludzkiej kondycji, przez obietnicę nowego serca, aż po zjednoczenie z Bogiem. Duchowa podróż od zatwardziałości do pełni życia w Chrystusie.'
+-coverImage: /images/Serce.webp
++coverImage: /images/serce.webp
+ order: 3
+ lang: pl
+ totalLessons: 16
