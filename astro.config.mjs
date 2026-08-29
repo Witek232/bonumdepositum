@@ -58,11 +58,51 @@ export default defineConfig({
   },
 
   integrations: [
-    sitemap(),
+    sitemap({
+      // Filtr: usuń 404 i prywatne ścieżki
+      filter: (page) => !page.includes('/404') && !page.includes('/_') && !page.includes('/admin'),
+      // Dodaje lastmod, changefreq, priority - kluczowe dla Google
+      serialize(item) {
+        const url = item.url;
+        let priority = 0.5;
+        let changefreq = 'monthly';
+
+        if (url === 'https://bonumdepositum.eu/') {
+          priority = 1.0;
+          changefreq = 'weekly';
+        } else if (url === 'https://bonumdepositum.eu/blog/' || url === 'https://bonumdepositum.eu/cycles/') {
+          priority = 0.9;
+          changefreq = 'daily';
+        } else if (url.includes('/cycles/') && url.split('/').length === 5) {
+          // /cycles/katechizm-katolicki/ - strony cykli (bez lekcji)
+          priority = 0.8;
+          changefreq = 'weekly';
+        } else if (url.includes('/blog/katechizm/')) {
+          priority = 0.7;
+          changefreq = 'monthly';
+        } else if (url.includes('/blog/')) {
+          priority = 0.6;
+          changefreq = 'monthly';
+        } else if (url.includes('/reading/')) {
+          priority = 0.6;
+          changefreq = 'monthly';
+        }
+
+        return {
+          ...item,
+          lastmod: new Date().toISOString(),
+          changefreq,
+          priority,
+        };
+      },
+    }),
     mdx(),
     alpinejs(),
   ],
 
+  // UWAGA SEO: i18n zadeklarowane ale strony /en/ /es/ nie istnieją i robią 301 na /
+  // Jeśli nie planujesz tłumaczeń w najbliższych 3 miesiącach - USUŃ cały blok i18n
+  // i zostaw tylko polską wersję. Obecnie zostawione, ale _redirects robi 301 /en/ -> /
   i18n: {
     defaultLocale: 'pl',
     locales: ['pl', 'en', 'es'],
