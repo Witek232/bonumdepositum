@@ -19,7 +19,6 @@
     "@pagefind/component-ui": "^1.5.2",
     "alpinejs": "^3.14.8",
     "astro": "^7.2.1",
-    "astro-seo": "^0.8.4",
     "lite-youtube-embed": "^0.3.4",
     "pagefind": "^1.5.2"
   },
