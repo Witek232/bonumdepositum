@@ -38,8 +38,10 @@ const translations = {
 const t = translations[lang] || translations.pl;
 
 const prefix = lang === 'pl' ? '' : `/${lang}`;
+// Link „Strona główna” usunięty z listy — rolę odnośnika do strony głównej
+// pełni nazwa serwisu w lewej kolumnie („Bonum Depositum”).
+// PRZYWRÓCENIE: dopisz ponownie wiersz  { href: `${prefix}/`, text: t.home },  na początek listy.
 const footerLinks = [
-  { href: `${prefix}/`, text: t.home },
   { href: `${prefix}/blog`, text: t.blog },
   { href: `${prefix}/cycles`, text: t.cycles },
   { href: `${prefix}/reading`, text: t.reading },
